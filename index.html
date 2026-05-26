@@ -362,19 +362,40 @@ let sequence = [];
 // ─── INIT ───────────────────────────────────────────────────────────────────
 const level1 = ['1C','1D','1H','1S','1NT'];
 const level2 = ['2C','2D','2H','2S','2NT'];
+const allOpenings = [...level1, ...level2, 'P'];
 
 function init() {
-  renderGrid('grid1', level1);
-  renderGrid('grid2', level2);
+  renderMain();
 }
 init();
 
+// Get the minimum valid bid for the next position
+function getMinBid() {
+  const lastActual = [...sequence].reverse().find(s => s.key !== 'P');
+  if (!lastActual) return null;
+  const lvl = parseInt(lastActual.key);
+  const suit = lastActual.key.match(/[CDHSNT]$/)?.[0] || 'NT';
+  const suitIdx = SUIT_RANK[suit];
+  // Next bid must be at least same level + next suit
+  return {level: lvl, suitIdx, lastActual: lastActual.key};
+}
+
 function renderGrid(id, bids) {
+  const min = getMinBid();
   const el = document.getElementById(id);
   el.innerHTML = bids.map(k => {
     const cls = getCls(k);
     const display = k.replace(/C/,'♣').replace(/D/,'♦').replace(/H/,'♥').replace(/S/,'♠');
-    return `<button class="bid-btn ${cls}" onclick="add('${k}')">${display}</button>`;
+    let disabled = false;
+    if (min) {
+      const kLvl = parseInt(k);
+      const kSuit = k.match(/[CDHSNT]$/)?.[0] || 'NT';
+      const kSuitIdx = SUIT_RANK[kSuit];
+      if (kLvl < min.level) disabled = true;
+      else if (kLvl === min.level && kSuitIdx <= min.suitIdx) disabled = true;
+    }
+    const style = disabled ? 'opacity:0.25;cursor:not-allowed;pointer-events:none;' : '';
+    return `<button class="bid-btn ${cls}" onclick="add('${k}')" style="${style}">${display}</button>`;
   }).join('');
   if (id === 'grid2') {
     el.innerHTML += `<button class="bid-btn nt" onclick="add('P')">Pass</button>`;
@@ -395,7 +416,32 @@ function tagHtml(tags) {
 }
 
 // ─── CORE ───────────────────────────────────────────────────────────────────
+const SUIT_RANK = {C:0, D:1, H:2, S:3, NT:4};
+
+// Bid A is "higher" than bid B if: level higher, OR same level + suit higher
+function isHigherOrEqual(keyA, keyB) {
+  if (keyB === 'P') return true; // pass doesn't raise minimum
+  if (keyA === 'P') return true; // pass is always valid
+  const lvlA = parseInt(keyA);
+  const lvlB = parseInt(keyB);
+  const suitA = keyA.match(/[CDHSNT]$/)?.[0] || 'NT';
+  const suitB = keyB.match(/[CDHSNT]$/)?.[0] || 'NT';
+  if (lvlA > lvlB) return true;
+  if (lvlA < lvlB) return false;
+  return SUIT_RANK[suitA] >= SUIT_RANK[suitB];
+}
+
 function add(key) {
+  // Validate: must be >= last actual bid (skip passes)
+  const lastActual = [...sequence].reverse().find(s => s.key !== 'P');
+  if (lastActual && !isHigherOrEqual(key, lastActual.key)) {
+    // Show brief flash on seq bar
+    const bar = document.getElementById('seqBar');
+    bar.style.borderColor = '#ef4444';
+    setTimeout(() => { bar.style.borderColor = ''; }, 400);
+    return;
+  }
+
   const role = sequence.length % 2 === 0 ? 'opener' : 'responder';
   sequence.push({key, role});
   render();
@@ -414,6 +460,8 @@ function clearAll() {
 // ─── RENDER ─────────────────────────────────────────────────────────────────
 function render() {
   renderSeq();
+  renderGrid('grid1', level1);
+  renderGrid('grid2', level2);
   renderMain();
 }
 
@@ -473,13 +521,24 @@ function renderMain() {
 
   let nextHtml = '';
   if (Object.keys(nextOptions).length > 0) {
-    const nextItems = Object.entries(nextOptions).map(([k, v]) => {
-      const cls = getCls(k);
-      return `<div class="next-item" onclick="add('${k}')">
-        <div class="next-bid ${cls}">${fmt(k)}</div>
-        <div class="next-desc">${v}</div>
-      </div>`;
-    }).join('');
+    // Filter to only bids valid under bridge rules
+    const min = getMinBid();
+    const nextItems = Object.entries(nextOptions)
+      .filter(([k]) => {
+        if (!min || k === 'P') return true;
+        const kLvl = parseInt(k);
+        const kSuit = k.match(/[CDHSNT]$/)?.[0] || 'NT';
+        if (kLvl < min.level) return false;
+        if (kLvl === min.level && SUIT_RANK[kSuit] <= min.suitIdx) return false;
+        return true;
+      })
+      .map(([k, v]) => {
+        const cls = getCls(k);
+        return `<div class="next-item" onclick="add('${k}')">
+          <div class="next-bid ${cls}">${fmt(k)}</div>
+          <div class="next-desc">${v}</div>
+        </div>`;
+      }).join('');
     nextHtml = `
       <div class="next-title">可选叫品 · 点击继续</div>
       <div class="next-grid">${nextItems}</div>
