@@ -465,33 +465,32 @@ body {
     </div>
 
     <div id="availableBidsPanel">
-      <div class="section-title">选择叫品</div>
-      <div id="availableBids">
-        <div class="section-title" style="font-size:0.65rem;color:var(--gold);margin:8px 0 4px;">—— 开叫 ——</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;">
-          <button class="bid-btn club large" onclick="addBidToSeq('1C')" title="1♣ 开叫">1♣</button>
-          <button class="bid-btn diamond large" onclick="addBidToSeq('1D')" title="1♦ 开叫">1♦</button>
-          <button class="bid-btn heart large" onclick="addBidToSeq('1H')" title="1♥ 开叫">1♥</button>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;">
-          <button class="bid-btn spade large" onclick="addBidToSeq('1S')" title="1♠ 开叫">1♠</button>
-          <button class="bid-btn nt large" onclick="addBidToSeq('1NT')" title="1NT 开叫">1NT</button>
-          <button class="bid-btn level large" onclick="addBidToSeq('2C')" title="2♣ 强牌">2♣</button>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;">
-          <button class="bid-btn diamond large" onclick="addBidToSeq('2D')" title="2♦">2♦</button>
-          <button class="bid-btn heart large" onclick="addBidToSeq('2H')" title="2♥">2♥</button>
-          <button class="bid-btn spade large" onclick="addBidToSeq('2S')" title="2♠">2♠</button>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px;">
-          <button class="bid-btn nt large" onclick="addBidToSeq('2NT')" title="2NT">2NT</button>
-          <button class="bid-btn pass large" onclick="addBidToSeq('P')" title="Pass">P</button>
-        </div>
-        <div class="section-title" style="font-size:0.65rem;color:var(--gold);margin:8px 0 4px;">—— 应叫（选开叫后） ——</div>
-        <div id="responseBids" style="color:var(--muted);font-size:0.78rem;padding:4px 0;">点击上方开叫后显示应叫</div>
-        <div class="section-title" style="font-size:0.65rem;color:var(--gold);margin:8px 0 4px;">—— 叫牌序列操作 ——</div>
-        <button class="bid-btn" onclick="clearSequence()" style="width:100%;font-size:0.75rem;font-weight:400;aspect-ratio:auto;padding:8px;" title="清空序列">🗑 清空序列</button>
+      <div class="section-title">应叫选项</div>
+      <div id="responseBids" style="color:var(--muted);font-size:0.82rem;padding:8px 0;">点击左侧开叫按钮开始</div>
+    </div>
+
+    <div id="fixedBidPanel" style="margin-top:16px;">
+      <div class="section-title">开叫按钮</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;">
+        <button class="bid-btn club large" onclick="addBidToSeq('1C')" title="1♣ 开叫">1♣</button>
+        <button class="bid-btn diamond large" onclick="addBidToSeq('1D')" title="1♦ 开叫">1♦</button>
+        <button class="bid-btn heart large" onclick="addBidToSeq('1H')" title="1♥ 开叫">1♥</button>
       </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;">
+        <button class="bid-btn spade large" onclick="addBidToSeq('1S')" title="1♠ 开叫">1♠</button>
+        <button class="bid-btn nt large" onclick="addBidToSeq('1NT')" title="1NT 开叫">1NT</button>
+        <button class="bid-btn level large" onclick="addBidToSeq('2C')" title="2♣ 强牌">2♣</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;">
+        <button class="bid-btn diamond large" onclick="addBidToSeq('2D')" title="2♦">2♦</button>
+        <button class="bid-btn heart large" onclick="addBidToSeq('2H')" title="2♥">2♥</button>
+        <button class="bid-btn spade large" onclick="addBidToSeq('2S')" title="2♠">2♠</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px;">
+        <button class="bid-btn nt large" onclick="addBidToSeq('2NT')" title="2NT">2NT</button>
+        <button class="bid-btn pass large" onclick="addBidToSeq('P')" title="Pass">P</button>
+      </div>
+      <button class="bid-btn" onclick="clearSequence()" style="width:100%;font-size:0.75rem;font-weight:400;aspect-ratio:auto;padding:8px;" title="清空序列">🗑 清空序列</button>
     </div>
   </div>
 
@@ -500,7 +499,7 @@ body {
     <div class="sequence-panel">
       <div class="sequence-label">叫牌序列</div>
       <div class="sequence-display" id="sequenceDisplay">
-        <span class="seq-placeholder">点击下方叫品开始</span>
+        <span class="seq-placeholder">点击左侧开叫按钮开始</span>
       </div>
     </div>
 
@@ -508,12 +507,12 @@ body {
       <div class="empty-state">
         <div class="icon">♣</div>
         <p>选择一个叫品查看详细含义</p>
-        <p style="margin-top:8px;font-size:0.8rem;">可按章节浏览，或直接点击叫品构建叫牌序列</p>
+        <p style="margin-top:8px;font-size:0.8rem;">点击左侧开叫按钮 → 再点击应叫 → 查看详细</p>
       </div>
     </div>
 
     <div class="available-bids-section" id="nextBidsSection" style="display:none;">
-      <div class="section-title">点击选择下一步</div>
+      <div class="section-title">选择下一步</div>
       <div id="nextBids"></div>
     </div>
   </div>
@@ -1253,9 +1252,10 @@ function clearSequence() {
     <div class="empty-state">
       <div class="icon">♣</div>
       <p>序列已清空</p>
-      <p style="margin-top:8px;font-size:0.8rem;">继续选择叫品</p>
+      <p style="margin-top:8px;font-size:0.8rem;">点击左侧开叫按钮开始</p>
     </div>`;
   document.getElementById('nextBidsSection').style.display = 'none';
+  document.getElementById('responseBids').innerHTML = '点击左侧开叫按钮开始';
 }
 
 function showBidInfo(key) {
