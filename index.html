@@ -27,12 +27,10 @@ body {
   color: var(--text);
   min-height: 100vh;
 }
-
-/* ─── HEADER ─── */
 .header {
-  background: linear-gradient(135deg, #1a2d47 0%, #0f1419 100%);
+  background: linear-gradient(135deg, #1a2d47, #0f1419);
   border-bottom: 1px solid var(--border);
-  padding: 12px 16px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,33 +38,22 @@ body {
   top: 0;
   z-index: 10;
 }
-.header h1 {
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
+.header h1 { font-size: 0.95rem; font-weight: 700; }
 .header h1 span { color: var(--club); }
-.header-badge {
-  font-size: 0.65rem;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 3px 10px;
-  color: var(--muted);
-}
+.header-badge { font-size: 0.62rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 9px; color: var(--muted); }
 
-/* ─── MAIN LAYOUT ─── */
+/* ─── MAIN ─── */
 .layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  height: calc(100vh - 49px);
+  grid-template-columns: 210px 1fr;
+  height: calc(100vh - 45px);
 }
 
 /* ─── LEFT PANEL ─── */
 .panel-left {
   border-right: 1px solid var(--border);
   overflow-y: auto;
-  padding: 12px 10px;
+  padding: 10px 9px;
   background: var(--bg);
 }
 .panel-left::-webkit-scrollbar { width: 4px; }
@@ -78,108 +65,44 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--muted);
-  margin: 8px 0 5px 2px;
+  margin: 8px 0 4px 2px;
 }
 .level-label:first-child { margin-top: 0; }
-
-/* Suit color headers */
-.suit-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 4px;
-}
-.suit-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.suit-dot.club { background: var(--club); }
-.suit-dot.diamond { background: var(--diamond); }
-.suit-dot.heart { background: var(--heart); }
-.suit-dot.spade { background: var(--spade); }
 
 .bid-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 5px;
-  margin-bottom: 6px;
+  gap: 4px;
 }
 .bid-btn {
-  aspect-ratio: 1.4;
-  border-radius: 10px;
+  aspect-ratio: 1.3;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--surface2);
   color: var(--text);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.12s;
-  min-height: 40px;
+  transition: all 0.1s;
+  min-height: 36px;
   line-height: 1;
-  text-align: center;
 }
-.bid-btn:hover {
-  border-color: var(--accent);
-  background: rgba(59,130,246,0.12);
-  transform: translateY(-1px);
-}
+.bid-btn:hover { border-color: var(--accent); background: rgba(59,130,246,0.12); transform: translateY(-1px); }
 .bid-btn:active { transform: translateY(0); }
 .bid-btn.club { color: var(--club); }
 .bid-btn.diamond { color: var(--diamond); }
 .bid-btn.heart { color: var(--heart); }
 .bid-btn.spade { color: var(--spade); }
-.bid-btn.nt { color: var(--nt); font-size: 0.72rem; }
-.bid-btn.wide { aspect-ratio: auto; font-size: 0.7rem; font-weight: 600; }
+.bid-btn.nt { color: var(--nt); font-size: 0.68rem; }
 
-/* Response items */
-.response-section-title {
-  font-size: 0.62rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--gold);
-  margin: 12px 0 5px 2px;
-}
-.response-list { margin-top: 2px; }
-.resp-item {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 7px 9px;
-  margin-bottom: 4px;
-  cursor: pointer;
-  transition: all 0.1s;
-}
-.resp-item:hover {
-  border-color: var(--accent);
-  background: rgba(59,130,246,0.1);
-}
-.resp-item:active { background: rgba(59,130,246,0.18); }
-.resp-bid { font-size: 0.92rem; font-weight: 700; margin-bottom: 1px; }
-.resp-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.35; }
-.resp-bid.club { color: var(--club); }
-.resp-bid.diamond { color: var(--diamond); }
-.resp-bid.heart { color: var(--heart); }
-.resp-bid.spade { color: var(--spade); }
-.resp-bid.nt { color: var(--nt); }
-
-.sep-line {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 12px 0 8px;
-}
-
-/* Action buttons */
 .action-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 5px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 .action-btn {
   background: var(--surface2);
@@ -187,7 +110,7 @@ body {
   border-radius: 8px;
   padding: 7px 6px;
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
   text-align: center;
@@ -198,7 +121,7 @@ body {
 /* ─── RIGHT PANEL ─── */
 .panel-right {
   overflow-y: auto;
-  padding: 12px 14px;
+  padding: 10px 14px;
   background: var(--surface);
 }
 .panel-right::-webkit-scrollbar { width: 4px; }
@@ -210,19 +133,19 @@ body {
   align-items: center;
   gap: 3px;
   flex-wrap: wrap;
-  min-height: 48px;
+  min-height: 42px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 8px 12px;
-  margin-bottom: 12px;
+  padding: 7px 11px;
+  margin-bottom: 10px;
 }
 .seq-bid {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 7px;
-  padding: 4px 9px;
-  font-size: 0.9rem;
+  padding: 3px 8px;
+  font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.1s;
@@ -230,71 +153,44 @@ body {
 .seq-bid:hover { border-color: var(--accent); }
 .seq-bid.opener { border-color: var(--gold); color: var(--gold); background: rgba(245,158,11,0.07); }
 .seq-bid.responder { border-color: var(--club); color: var(--club); background: rgba(34,197,94,0.07); }
-.seq-sep { color: var(--muted); font-size: 0.75rem; padding: 0 1px; }
-.seq-placeholder { color: var(--muted); font-size: 0.82rem; }
-.seq-clear {
-  margin-left: auto;
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 0.7rem;
-  padding: 4px 6px;
-  border-radius: 4px;
-  transition: color 0.1s;
-}
+.seq-sep { color: var(--muted); font-size: 0.72rem; }
+.seq-placeholder { color: var(--muted); font-size: 0.8rem; }
+.seq-clear { margin-left: auto; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.68rem; padding: 3px 6px; border-radius: 4px; transition: color 0.1s; }
 .seq-clear:hover { color: #ef4444; }
 
-/* Info card */
-.info-card {
+/* Current bid info */
+.current-bid-card {
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  animation: fadeIn 0.15s ease;
+  border-radius: 10px;
+  padding: 10px 13px;
+  margin-bottom: 10px;
+  animation: fadeIn 0.12s ease;
 }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; } }
-.info-card h2 {
-  font-size: 1rem;
+@keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; } }
+.current-bid-card h2 {
+  font-size: 0.95rem;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 7px;
 }
-.info-card h2 .bid-display { font-size: 1.1rem; }
-.info-card h2 .title-text { color: var(--muted); font-size: 0.82rem; font-weight: 400; }
-.info-card h2 .badge {
+.current-bid-card h2 .bid-sym { font-size: 1.05rem; }
+.current-bid-card h2 .role-badge {
+  font-size: 0.62rem;
+  font-weight: 600;
   background: var(--accent);
   color: white;
-  border-radius: 5px;
-  padding: 1px 7px;
-  font-size: 0.72rem;
-  font-weight: 600;
-}
-.info-card p { font-size: 0.85rem; line-height: 1.6; margin-bottom: 6px; }
-.info-card .meaning { color: #60a5fa; font-size: 0.88rem; }
-.info-card .note {
-  background: rgba(0,0,0,0.2);
-  border-left: 3px solid var(--gold);
-  padding: 7px 11px;
-  border-radius: 0 6px 6px 0;
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin: 8px 0;
-  line-height: 1.5;
-}
-.tag {
-  display: inline-block;
-  padding: 1px 6px;
   border-radius: 4px;
-  font-size: 0.65rem;
-  font-weight: 600;
+  padding: 1px 6px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-right: 3px;
+  letter-spacing: 0.05em;
 }
+.current-bid-card h2 .role-badge.resp { background: var(--club); }
+.current-bid-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
+.tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
 .tag-forcing { background: rgba(239,68,68,0.18); color: #fca5a5; }
 .tag-natural { background: rgba(34,197,94,0.15); color: #86efac; }
 .tag-artificial { background: rgba(168,85,247,0.18); color: #d8b4fe; }
@@ -302,39 +198,65 @@ body {
 .tag-weak { background: rgba(100,116,139,0.2); color: #94a3b8; }
 .tag-invitational { background: rgba(245,158,11,0.18); color: #fcd34d; }
 
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--muted);
+/* Next bids section */
+.next-title {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 6px;
 }
+.next-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 6px;
+}
+.next-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 11px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.next-item:hover {
+  border-color: var(--accent);
+  background: rgba(59,130,246,0.1);
+  transform: translateY(-1px);
+}
+.next-item:active { transform: translateY(0); }
+.next-bid { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+.next-bid.club { color: var(--club); }
+.next-bid.diamond { color: var(--diamond); }
+.next-bid.heart { color: var(--heart); }
+.next-bid.spade { color: var(--spade); }
+.next-bid.nt { color: var(--nt); }
+.next-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
 .empty-state .icon { font-size: 2rem; opacity: 0.25; margin-bottom: 10px; }
 .empty-state p { font-size: 0.85rem; }
 
+/* Hint text */
+.hint {
+  text-align: center;
+  padding: 8px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  background: var(--surface2);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 640px) {
-  .layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    height: auto;
-  }
-  .panel-left {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    padding: 10px;
-    overflow-y: visible;
-  }
-  .panel-right {
-    min-height: 50vh;
-    padding: 10px;
-  }
-  .header h1 { font-size: 0.9rem; }
-  .bid-grid { gap: 4px; }
-  .bid-btn {
-    font-size: 0.78rem;
-    min-height: 36px;
-    border-radius: 8px;
-  }
-  .bid-btn.nt { font-size: 0.65rem; }
+  .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .panel-left { border-right: none; border-bottom: 1px solid var(--border); overflow-y: visible; padding: 8px; }
+  .panel-right { min-height: 55vh; }
+  .next-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -346,38 +268,26 @@ body {
 </div>
 
 <div class="layout">
-  <!-- LEFT -->
-  <div class="panel-left" id="leftPanel">
-    <!-- 1阶 -->
+  <!-- LEFT: bid buttons -->
+  <div class="panel-left">
     <div class="level-label">一阶</div>
     <div class="bid-grid" id="grid1"></div>
-
-    <!-- 2阶 -->
     <div class="level-label">二阶</div>
     <div class="bid-grid" id="grid2"></div>
-
-    <!-- 应叫区 -->
-    <div class="response-section-title" id="respTitle" style="display:none;">应叫</div>
-    <div class="response-list" id="responseList"></div>
-
-    <!-- 操作 -->
-    <hr class="sep-line">
     <div class="action-row">
       <button class="action-btn" onclick="undo()">↩ 撤销</button>
       <button class="action-btn" onclick="clearAll()">🗑 清空</button>
     </div>
   </div>
 
-  <!-- RIGHT -->
+  <!-- RIGHT: sequence + next options -->
   <div class="panel-right">
     <div class="seq-bar" id="seqBar">
       <span class="seq-placeholder">点击左侧叫品开始</span>
     </div>
-    <div id="infoArea">
-      <div class="empty-state">
-        <div class="icon">♣</div>
-        <p>点击叫品构建序列</p>
-      </div>
+
+    <div id="mainContent">
+      <div class="hint">← 点击左侧叫品构建序列</div>
     </div>
   </div>
 </div>
@@ -386,46 +296,73 @@ body {
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const data = {
   // Opening bids
-  "1C":  {t:"1♣",tag:"artificial forcing",title:"人工预备性开叫，逼叫一轮",next:{"1D":"示弱 0-6点","1H":"4张♥ 7+","1S":"4张♠ 7+","1NT":"均型 7-10","2D":"5张+♦ 10+","2H":"好5张/6张+♥ 进局逼","2S":"好5张/6张+♠ 进局逼","2NT":"均型 11-12 邀","3NT":"13-15点 均型"}},
-  "1D":  {t:"1♦",tag:"natural",title:"自然开叫，至少4张♦，12-21点",next:{"1H":"4张♥ 7+","1S":"4张♠ 7+","1NT":"无4张高花 7-10","2C":"5张+♣ 10+","2D":"4张支持 6-10","2H":"好5张/6张+♥ 进局逼","2S":"好5张/6张+♠ 进局逼","2NT":"均型 11-12"}},
-  "1H":  {t:"1♥",tag:"natural",title:"自然开叫，至少5张♥，12-21点",next:{"1S":"4张♠ 7+","1NT":"无4张♠ 7-10","2C":"5张+♣ 10+","2D":"5张+♦ 10+","2H":"4张支持 6-10","2S":"好5张+♠ 进局逼","2NT":"均型 11-12","3H":"好13-15 4张支持"}},
-  "1S":  {t:"1♠",tag:"natural",title:"自然开叫，至少5张♠，12-21点",next:{"1NT":"无4张♠ 7-10","2C":"5张+♣ 10+","2D":"5张+♦ 10+","2H":"4张♥ 10+ 询双高","2S":"4张支持 6-10","2NT":"均型 11-12","3S":"好13-15 4张支持"}},
-  "1NT": {t:"1NT",tag:"natural game",title:"强无将，好的12-15点均型，无4张高花",next:{"2C":"斯台曼 问高花","2D":"转移叫→♥","2H":"5张♠转移","2S":"5张♠自然","2NT":"邀叫 11-12","3NT":"封3NT"}},
-
-  // 2阶开叫
-  "2C":  {t:"2♣",tag:"artificial game forcing",title:"强牌，22+点均型，或19+点非均型（埃坷强二）",next:{"2D":"等待应叫","2H":"4张♥ 7+","2S":"4张♠ 7+","2NT":"均型 0-7","3C":"5张+♣","3D":"5张+♦"}},
-  "2D":  {t:"2♦",tag:"weak natural",title:"弱二，6张+低花套，或5张低花+4张高花，6-11点",next:{"2H":"斯台曼 问高花","2S":"4张♠","2NT":"等待","3D":"加叫进局"}},
-  "2H":  {t:"2♥",tag:"weak natural",title:"弱二，6张+♥套，6-11点",next:{"2S":"斯台曼","2NT":"询问","3H":"加叫","4H":"封局"}},
-  "2S":  {t:"2♠",tag:"weak natural",title:"弱二，6张+♠套，6-11点",next:{"2NT":"询问","3S":"加叫","4S":"封局"}},
-  "2NT": {t:"2NT",tag:"weak natural",title:"双低花5-5+，6-11点，阻击性",next:{"3C":"♣套","3D":"♦套","3H":"止叫","3S":"止叫","3NT":"封3NT"}},
+  "1C":  {t:"1♣",role:"opener",tag:"artificial forcing",title:"人工预备性开叫，逼叫一轮",meaning:"好的12点到差的15点均型；或12-18点三色套；或16-18点6张♣套；或19+点强牌。",next:{"1D":"示弱 0-6点","1H":"4张♥ 7+","1S":"4张♠ 7+","1NT":"均型 7-10","2D":"5张+♦ 10+","2H":"好5张/6张+♥ 进局逼","2S":"好5张/6张+♠ 进局逼","2NT":"均型 11-12 邀","3NT":"13-15点 均型"}},
+  "1D":  {t:"1♦",role:"opener",tag:"natural",title:"自然开叫，至少4张♦，12-21点",meaning:"持4张以上♦，12-21点开叫。也可为4-4-1-4单张♦。",next:{"1H":"4张♥ 7+","1S":"4张♠ 7+","1NT":"无4张高花 7-10","2C":"5张+♣ 10+","2D":"4张支持 6-10","2H":"好5张/6张+♥ 进局逼","2S":"好5张/6张+♠ 进局逼","2NT":"均型 11-12"}},
+  "1H":  {t:"1♥",role:"opener",tag:"natural",title:"自然开叫，至少5张♥，12-21点",meaning:"持5张以上♥，12-21点开叫。",next:{"1S":"4张♠ 7+","1NT":"无4张♠ 7-10","2C":"5张+♣ 10+","2D":"5张+♦ 10+","2H":"4张支持 6-10","2S":"好5张+♠ 进局逼","2NT":"均型 11-12","3H":"好13-15 4张支持"}},
+  "1S":  {t:"1♠",role:"opener",tag:"natural",title:"自然开叫，至少5张♠，12-21点",meaning:"持5张以上♠，或4♠+4♥双高套，12-21点。",next:{"1NT":"无4张♠ 7-10","2C":"5张+♣ 10+","2D":"5张+♦ 10+","2H":"4张♥ 10+ 询双高","2S":"4张支持 6-10","2NT":"均型 11-12","3S":"好13-15 4张支持"}},
+  "1NT": {t:"1NT",role:"opener",tag:"natural game",title:"强无将，好的12-15点均型，无4张高花",meaning:"均型12-15点，无4张高花（可有5张低花）。",next:{"2C":"斯台曼 问高花","2D":"转移叫→♥","2H":"5张♠转移","2S":"5张♠自然","2NT":"邀叫 11-12","3NT":"封3NT"}},
+  "2C":  {t:"2♣",role:"opener",tag:"artificial game forcing",title:"强牌，22+点均型，或19+非均型（埃坷强二）",meaning:"逼叫进局。相当于传统强二开叫。",next:{"2D":"等待应叫","2H":"4张♥ 7+","2S":"4张♠ 7+","2NT":"均型 0-7","3C":"5张+♣","3D":"5张+♦"}},
+  "2D":  {t:"2♦",role:"opener",tag:"weak natural",title:"威尔柯茨2♦，弱二，6张+低花套",meaning:"弱二开叫，6张以上低花套，或5张低花+4张高花，6-11点。",next:{"2H":"斯台曼 问高花","2S":"4张♠","2NT":"等待","3D":"加叫进局"}},
+  "2H":  {t:"2♥",role:"opener",tag:"weak natural",title:"弱二，6张+♥套，6-11点",meaning:"弱二阻击叫，6张以上♥套，6-11点。",next:{"2S":"斯台曼","2NT":"询问","3H":"加叫","4H":"封局"}},
+  "2S":  {t:"2♠",role:"opener",tag:"weak natural",title:"弱二，6张+♠套，6-11点",meaning:"弱二阻击叫，6张以上♠套，6-11点。",next:{"2NT":"询问","3S":"加叫","4S":"封局"}},
+  "2NT": {t:"2NT",role:"opener",tag:"weak natural",title:"双低花5-5+，6-11点，阻击性",meaning:"两门低花5-5或更长，无高花，6-11点。",next:{"3C":"♣套","3D":"♦套","3H":"止叫","3S":"止叫","3NT":"封3NT"}},
 
   // Contextual: after 1C
-  "1C-1D": {t:"1♣-1♦",tag:"weak forcing",title:"示弱应叫，应叫者0-6点，开叫者须继续描述",next:{"1H":"4张♥或4-4-1-4三色","1S":"4张♠或4-4-1-4三色","1NT":"均型 12-15点","2D":"6张+♦ 16-18","2NT":"18-22点 均型","2C":"人工进局逼 22+"}},
-  "1C-1H": {t:"1♣-1♥",tag:"natural forcing",title:"积极应叫，7+点，至少4张♥，逼叫一轮",next:{"1NT":"无将特征","1S":"4张♠","2H":"4张支持","2S":"6张+强套","2NT":"22-23点 均型","3H":"9赢墩"}},
-  "1C-1S": {t:"1♣-1♠",tag:"natural forcing",title:"积极应叫，7+点，至少4张♠，逼叫一轮",next:{"1NT":"无将特征","2S":"4张支持","2C":"4张♣","2NT":"22-23点 均型","3S":"9赢墩"}},
-  "1C-1NT":{t:"1♣-1NT",tag:"natural",title:"7-10点均型，无4张高花，不逼叫",next:{"2C":"4张♣弱牌","2D":"6张+♦ 16-18","2H":"4张♥","2S":"4张♠","2NT":"18-22点 均型"}},
-  "1C-2D": {t:"1♣-2♦",tag:"natural forcing",title:"10+点，5张+♦套，无4张高花，逼叫一轮",next:{"2H":"4张♥","2S":"4张♠","2NT":"18-22均型","3D":"好6张+♦ 16-18","3NT":"赌博式"}},
-  "1C-2H": {t:"1♣-2♥",tag:"natural game forcing",title:"好5张或6张以上♥套，进局逼叫",next:{}},
-  "1C-2S": {t:"1♣-2♠",tag:"natural game forcing",title:"好5张或6张以上♠套，进局逼叫",next:{}},
-  "1C-2NT":{t:"1♣-2NT",tag:"natural invitational",title:"11-12点均型，无4张高花，邀叫",next:{}},
-  "1C-3NT":{t:"1♣-3NT",tag:"game",title:"13-15点均型，封3NT",next:{}},
+  "1C-1D": {t:"1♣-1♦",role:"responder",tag:"weak forcing",title:"示弱应叫",meaning:"应叫者0-6点。开叫者必须继续描述牌情，逼叫一轮。",next:{"1H":"4张♥ 或 4-4-1-4三色","1S":"4张♠ 或 4-4-1-4三色","1NT":"均型 12-15点 4-2-3-4","2D":"6张+♦ 16-18点","2NT":"18-22点 均型","2C":"人工进局逼 22+"}},
+  "1C-1H": {t:"1♣-1♥",role:"responder",tag:"natural forcing",title:"积极应叫，4张♥",meaning:"应叫者7+点，至少4张♥，逼叫一轮。",next:{"1NT":"无将特征","1S":"4张♠","2H":"4张支持","2S":"6张+强套","2NT":"22-23点 均型","3H":"9赢墩"}},
+  "1C-1S": {t:"1♣-1♠",role:"responder",tag:"natural forcing",title:"积极应叫，4张♠",meaning:"应叫者7+点，至少4张♠，逼叫一轮。",next:{"1NT":"无将特征","2S":"4张支持","2C":"4张♣","2NT":"22-23点 均型","3S":"9赢墩"}},
+  "1C-1NT":{t:"1♣-1NT",role:"responder",tag:"natural",title:"均型 7-10点",meaning:"7-10点均型，无4张高花，不逼叫。",next:{"2C":"4张♣弱牌","2D":"6张+♦ 16-18","2H":"4张♥","2S":"4张♠","2NT":"18-22点 均型"}},
+  "1C-2D": {t:"1♣-2♦",role:"responder",tag:"natural forcing",title:"5张+♦套 10+点",meaning:"10+点，5张以上♦套，无4张高花，逼叫一轮。",next:{"2H":"4张♥","2S":"4张♠","2NT":"18-22均型","3D":"好6张+♦ 16-18","3NT":"赌博式"}},
+  "1C-2H": {t:"1♣-2♥",role:"responder",tag:"natural game forcing",title:"好5张/6张+♥ 进局逼",meaning:"好5张或6张以上♥套，进局逼叫。",next:{}},
+  "1C-2S": {t:"1♣-2♠",role:"responder",tag:"natural game forcing",title:"好5张/6张+♠ 进局逼",meaning:"好5张或6张以上♠套，进局逼叫。",next:{}},
+  "1C-2NT":{t:"1♣-2NT",role:"responder",tag:"natural invitational",title:"均型 11-12点 邀叫",meaning:"11-12点均型，无4张高花，邀叫进局。",next:{}},
+  "1C-3NT":{t:"1♣-3NT",role:"responder",tag:"game",title:"13-15点 均型 封局",meaning:"13-15点均型，封3NT。",next:{}},
 
   // After 1D
-  "1D-1H": {t:"1♦-1♥",tag:"natural forcing",title:"4张♥，7+点，逼叫一轮",next:{"1S":"4张♠","1NT":"无将特征","2H":"4张支持","2S":"6张+♠强套","2NT":"好牌均型","3H":"好13-15点"}},
-  "1D-1S": {t:"1♦-1♠",tag:"natural forcing",title:"4张♠，7+点，逼叫一轮",next:{"1NT":"无将特征","2S":"4张支持","2C":"4张♣","2NT":"好牌均型","3S":"好13-15点"}},
+  "1D-1H": {t:"1♦-1♥",role:"responder",tag:"natural forcing",title:"4张♥ 7+点",meaning:"应叫者4张♥，7+点，逼叫一轮。",next:{"1S":"4张♠","1NT":"无将特征","2H":"4张支持","2S":"6张+♠强套","2NT":"好牌均型","3H":"好13-15点"}},
+  "1D-1S": {t:"1♦-1♠",role:"responder",tag:"natural forcing",title:"4张♠ 7+点",meaning:"应叫者4张♠，7+点，逼叫一轮。",next:{"1NT":"无将特征","2S":"4张支持","2C":"4张♣","2NT":"好牌均型","3S":"好13-15点"}},
+  "1D-1NT":{t:"1♦-1NT",role:"responder",tag:"natural",title:"无4张高花 7-10点",meaning:"7-10点均型，无4张高花，不逼叫。",next:{}},
+  "1D-2C": {t:"1♦-2♣",role:"responder",tag:"natural forcing",title:"5张+♣ 10+点",meaning:"5张以上♣套，10+点，逼叫一轮。",next:{}},
+  "1D-2H": {t:"1♦-2♥",role:"responder",tag:"natural game forcing",title:"好5张/6张+♥ 进局逼",meaning:"好5张或6张以上♥，进局逼叫。",next:{}},
+  "1D-2S": {t:"1♦-2♠",role:"responder",tag:"natural game forcing",title:"好5张/6张+♠ 进局逼",meaning:"好5张或6张以上♠，进局逼叫。",next:{}},
+
+  // After 1H
+  "1H-1S": {t:"1♥-1♠",role:"responder",tag:"natural forcing",title:"4张♠ 7+点",meaning:"4张♠，7+点，逼叫一轮。",next:{"1NT":"无将特征","2S":"4张支持","2C":"4张♣","2NT":"好牌均型","3S":"好13-15点"}},
+  "1H-1NT":{t:"1♥-1NT",role:"responder",tag:"natural",title:"无4张♠ 7-10点",meaning:"无4张♠，7-10点均型。",next:{}},
+  "1H-2C": {t:"1♥-2♣",role:"responder",tag:"natural forcing",title:"5张+♣ 10+点",meaning:"5张以上♣套，10+点。",next:{}},
+  "1H-2D": {t:"1♥-2♦",role:"responder",tag:"natural forcing",title:"5张+♦ 10+点",meaning:"5张以上♦套，10+点。",next:{}},
+  "1H-2H": {t:"1♥-2♥",role:"responder",tag:"natural",title:"4张支持 6-10点",meaning:"对♥有4张支持，6-10点，不逼叫。",next:{}},
+  "1H-2S": {t:"1♥-2♠",role:"responder",tag:"natural game forcing",title:"好5张+♠ 进局逼",meaning:"好5张以上♠，进局逼叫。",next:{}},
+
+  // After 1S
+  "1S-1NT":{t:"1♠-1NT",role:"responder",tag:"natural",title:"无4张♠ 7-10点",meaning:"无4张♠，7-10点均型。",next:{}},
+  "1S-2C": {t:"1♠-2♣",role:"responder",tag:"natural forcing",title:"5张+♣ 10+点",meaning:"5张以上♣套，10+点。",next:{}},
+  "1S-2D": {t:"1♠-2♦",role:"responder",tag:"natural forcing",title:"5张+♦ 10+点",meaning:"5张以上♦套，10+点。",next:{}},
+  "1S-2H": {t:"1♠-2♥",role:"responder",tag:"natural forcing",title:"4张♥ 10+点 询双高",meaning:"4张♥，10+点，询问是否有双高套。",next:{}},
+  "1S-2S": {t:"1♠-2♠",role:"responder",tag:"natural",title:"4张支持 6-10点",meaning:"对♠有4张支持，6-10点。",next:{}},
+
+  // After 1NT
+  "1NT-2C": {t:"1NT-2♣",role:"responder",tag:"artificial forcing",title:"斯台曼 问高花",meaning:"询问开叫者是否有4张高花套。开叫者答叫：2♦=有4张高花，2NT/3m=无4张高花。",next:{}},
+  "1NT-2D": {t:"1NT-2♦",role:"responder",tag:"artificial forcing",title:"转移叫→♥",meaning:"应叫者持5张♥，要求开叫者叫2♥。",next:{}},
+  "1NT-2H": {t:"1NT-2♥",role:"responder",tag:"artificial forcing",title:"5张♠转移",meaning:"应叫者持5张♠，要求开叫者叫2♠。",next:{}},
+  "1NT-2S": {t:"1NT-2♠",role:"responder",tag:"natural",title:"5张♠自然",meaning:"5张♠，自然应叫。",next:{}},
+  "1NT-2NT":{t:"1NT-2NT",role:"responder",tag:"invitational",title:"邀叫 11-12点",meaning:"应叫者11-12点均型，询问开叫者是否愿意进局。",next:{}},
+  "1NT-3NT":{t:"1NT-3NT",role:"responder",tag:"game",title:"封3NT",meaning:"13-15点均型，封3NT。",next:{}},
+
+  // After 2C
+  "2C-2D": {t:"2♣-2♦",role:"responder",tag:"weak",title:"等待应叫",meaning:"应叫者没有立即回答手段，等待开叫者描述牌情。",next:{}},
+  "2C-2H": {t:"2♣-2♥",role:"responder",tag:"natural forcing",title:"4张♥ 7+点",meaning:"4张♥，7+点。",next:{}},
+  "2C-2S": {t:"2♣-2♠",role:"responder",tag:"natural forcing",title:"4张♠ 7+点",meaning:"4张♠，7+点。",next:{}},
+  "2C-2NT":{t:"2♣-2NT",role:"responder",tag:"natural",title:"均型 0-7点",meaning:"0-7点均型，不知如何应叫时的保守选择。",next:{}},
 };
-
-// Suit order for display
-const suitOrder = ['C','D','H','S','NT'];
-
-// Openings per level
-const level1 = ['1C','1D','1H','1S','1NT'];
-const level2 = ['2C','2D','2H','2S','2NT'];
 
 // ─── STATE ──────────────────────────────────────────────────────────────────
 let sequence = [];
 
 // ─── INIT ───────────────────────────────────────────────────────────────────
+const level1 = ['1C','1D','1H','1S','1NT'];
+const level2 = ['2C','2D','2H','2S','2NT'];
+
 function init() {
   renderGrid('grid1', level1);
   renderGrid('grid2', level2);
@@ -439,14 +376,12 @@ function renderGrid(id, bids) {
     const display = k.replace(/C/,'♣').replace(/D/,'♦').replace(/H/,'♥').replace(/S/,'♠');
     return `<button class="bid-btn ${cls}" onclick="add('${k}')">${display}</button>`;
   }).join('');
-  // Pass button at end of level 2 row
   if (id === 'grid2') {
     el.innerHTML += `<button class="bid-btn nt" onclick="add('P')">Pass</button>`;
   }
 }
 
 function getCls(k) {
-  if (k === 'P') return 'nt';
   const s = k.match(/[CDHSNT]$/)?.[0];
   return {C:'club',D:'diamond',H:'heart',S:'spade',NT:'nt'}[s] || 'nt';
 }
@@ -455,9 +390,14 @@ function fmt(k) {
   return k.replace(/C/g,'♣').replace(/D/g,'♦').replace(/H/g,'♥').replace(/S/g,'♠');
 }
 
+function tagHtml(tags) {
+  return tags.split(' ').map(t => `<span class="tag tag-${t}">${t}</span>`).join('');
+}
+
 // ─── CORE ───────────────────────────────────────────────────────────────────
 function add(key) {
-  sequence.push({key, role: sequence.length % 2 === 0 ? 'opener' : 'responder'});
+  const role = sequence.length % 2 === 0 ? 'opener' : 'responder';
+  sequence.push({key, role});
   render();
 }
 
@@ -471,11 +411,10 @@ function clearAll() {
   render();
 }
 
-// ─── RENDER ────────────────────────────────────────────────────────────────
+// ─── RENDER ─────────────────────────────────────────────────────────────────
 function render() {
   renderSeq();
-  renderResp();
-  renderInfo();
+  renderMain();
 }
 
 function renderSeq() {
@@ -485,72 +424,17 @@ function renderSeq() {
     return;
   }
   bar.innerHTML = sequence.map((s, i) => {
-    const role = s.role === 'opener' ? 'opener' : 'responder';
+    const rc = s.role === 'opener' ? 'opener' : 'responder';
     const sep = i < sequence.length - 1 ? '<span class="seq-sep">—</span>' : '';
-    return `<span class="seq-bid ${role}" onclick="showAt(${i})">${fmt(s.key)}</span>${sep}`;
-  }).join('') + `<button class="seq-clear" onclick="clearAll()">✕ 清空</button>`;
+    return `<span class="seq-bid ${rc}" onclick="showAt(${i})">${fmt(s.key)}</span>${sep}`;
+  }).join('') + `<button class="seq-clear" onclick="clearAll()">✕</button>`;
 }
 
-function renderResp() {
-  const el = document.getElementById('responseList');
-  const title = document.getElementById('respTitle');
+function renderMain() {
+  const main = document.getElementById('mainContent');
 
   if (sequence.length === 0) {
-    title.style.display = 'none';
-    el.innerHTML = '';
-    return;
-  }
-
-  const isOpenerTurn = sequence.length % 2 === 1; // next is response to last bid
-
-  if (!isOpenerTurn) {
-    // Last bid was a response, show what happens next
-    title.style.display = 'none';
-    el.innerHTML = '';
-    return;
-  }
-
-  // Next is response to last bid
-  const last = sequence[sequence.length - 1].key;
-  let ctxKey = `1C-1D`; // placeholder
-  let next = {};
-
-  // Find contextual responses first
-  if (sequence.length >= 1) {
-    const prev = sequence[sequence.length - 1];
-    const ctx = `${prev.key}-${last}`;
-    if (data[ctx]) {
-      next = data[ctx].next || {};
-      title.style.display = 'block';
-      title.textContent = `对 ${fmt(last)} 的应叫`;
-    } else if (data[last]) {
-      next = data[last].next || {};
-      title.style.display = 'block';
-      title.textContent = `对 ${fmt(last)} 的应叫`;
-    } else {
-      title.style.display = 'none';
-      next = {};
-    }
-  }
-
-  if (Object.keys(next).length === 0) {
-    el.innerHTML = '<div style="color:var(--muted);font-size:0.72rem;padding:4px 0;">无预设数据</div>';
-    return;
-  }
-
-  el.innerHTML = Object.entries(next).map(([k, v]) => {
-    const cls = getCls(k);
-    return `<div class="resp-item" onclick="add('${k}')">
-      <div class="resp-bid ${cls}">${fmt(k)}</div>
-      <div class="resp-desc">${v}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderInfo() {
-  const area = document.getElementById('infoArea');
-  if (sequence.length === 0) {
-    area.innerHTML = `<div class="empty-state"><div class="icon">♣</div><p>点击叫品构建序列</p></div>`;
+    main.innerHTML = `<div class="hint">← 点击左侧叫品开始</div>`;
     return;
   }
 
@@ -558,43 +442,69 @@ function renderInfo() {
   const ctx = sequence.length >= 2 ? `${sequence[sequence.length-2].key}-${last.key}` : null;
   const d = (ctx && data[ctx]) ? data[ctx] : (data[last.key] || null);
 
-  if (!d) {
-    area.innerHTML = `<div class="info-card"><h2><span class="bid-display">${fmt(last.key)}</span><span class="badge">${last.role === 'opener' ? '开叫' : '应叫'}</span></h2></div>`;
-    return;
+  // ── Current bid card ──
+  let card = '';
+  if (d) {
+    card = `<div class="current-bid-card">
+      <h2>
+        <span class="bid-sym ${getCls(last.key)}">${fmt(last.key)}</span>
+        <span>${d.title || ''}</span>
+        <span class="role-badge ${last.role === 'responder' ? 'resp' : ''}">${last.role === 'opener' ? '开叫' : '应叫'}</span>
+      </h2>
+      <p>${d.meaning || ''}</p>
+      ${d.tag ? `<div class="tags">${tagHtml(d.tag)}</div>` : ''}
+    </div>`;
+  } else {
+    card = `<div class="current-bid-card">
+      <h2><span class="bid-sym ${getCls(last.key)}">${fmt(last.key)}</span><span>${last.role === 'opener' ? '开叫' : '应叫'}</span></h2>
+    </div>`;
   }
 
-  const tags = d.tag ? d.tag.split(' ').map(t => `<span class="tag tag-${t}">${t}</span>`).join('') : '';
+  // ── Next options ──
+  // Priority: contextual next > opener's next
+  let nextOptions = {};
+  if (d && d.next && Object.keys(d.next).length > 0) {
+    nextOptions = d.next;
+  } else if (ctx && data[ctx] && data[ctx].next) {
+    nextOptions = data[ctx].next;
+  } else if (data[last.key] && data[last.key].next) {
+    nextOptions = data[last.key].next;
+  }
 
-  area.innerHTML = `<div class="info-card">
-    <h2>
-      <span class="bid-display">${fmt(last.key)}</span>
-      <span class="title-text">${d.title}</span>
-      <span class="badge">${last.role === 'opener' ? '开叫' : '应叫'}</span>
-    </h2>
-    <p class="meaning">${d.title}</p>
-    ${tags ? `<div style="margin-top:8px;">${tags}</div>` : ''}
-    ${ctx && data[ctx] ? `<div class="note">${data[ctx].title}</div>` : ''}
-  </div>`;
+  let nextHtml = '';
+  if (Object.keys(nextOptions).length > 0) {
+    const nextItems = Object.entries(nextOptions).map(([k, v]) => {
+      const cls = getCls(k);
+      return `<div class="next-item" onclick="add('${k}')">
+        <div class="next-bid ${cls}">${fmt(k)}</div>
+        <div class="next-desc">${v}</div>
+      </div>`;
+    }).join('');
+    nextHtml = `
+      <div class="next-title">可选叫品 · 点击继续</div>
+      <div class="next-grid">${nextItems}</div>
+      <div style="text-align:center;margin-top:8px;">
+        <button class="bid-btn nt" onclick="add('P')" style="font-size:0.78rem;aspect-ratio:auto;padding:6px 16px;">Pass 不叫</button>
+      </div>`;
+  } else {
+    nextHtml = `<div class="hint" style="margin-top:8px;">无预设后续叫品，可手动继续叫牌或点击序列中的叫品查看</div>`;
+  }
+
+  main.innerHTML = card + nextHtml;
 }
 
-// Show info for any bid in sequence
+// Click on sequence bid to show its info + next options at that point
 function showAt(idx) {
-  const item = sequence[idx];
-  const ctx = idx >= 1 ? `${sequence[idx-1].key}-${item.key}` : null;
-  const d = (ctx && data[ctx]) ? data[ctx] : (data[item.key] || null);
+  // Truncate sequence to this point
+  const main = document.getElementById('mainContent');
+  const saved = sequence.slice(idx + 1);
+  sequence = sequence.slice(0, idx + 1);
 
-  const area = document.getElementById('infoArea');
-  if (!d) {
-    area.innerHTML = `<div class="info-card"><h2><span class="bid-display">${fmt(item.key)}</span></h2></div>`;
-    return;
-  }
-  const tags = d.tag ? d.tag.split(' ').map(t => `<span class="tag tag-${t}">${t}</span>`).join('') : '';
-  area.innerHTML = `<div class="info-card">
-    <h2><span class="bid-display">${fmt(item.key)}</span><span class="title-text">${d.title}</span></h2>
-    <p class="meaning">${d.title}</p>
-    ${tags ? `<div style="margin-top:8px;">${tags}</div>` : ''}
-    ${d.next && Object.keys(d.next).length > 0 ? `<div class="note">后续叫品: ${Object.entries(d.next).map(([k,v]) => fmt(k)+':'+v).join(' | ')}</div>` : ''}
-  </div>`;
+  renderMain();
+  renderSeq();
+
+  // Restore
+  sequence = sequence.concat(saved);
 }
 </script>
 </body>
