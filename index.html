@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>波兰梅花 (Polish Club) 叫牌查询</title>
+<style>
+:root {
+  --bg: #0f1419;
+  --surface: #1a2332;
+  --surface2: #243044;
+  --border: #2d3f5a;
+  --text: #e8edf4;
+  --muted: #8899aa;
+  --accent: #3b82f6;
+  --accent2: #60a5fa;
+  --club: #16a34a;
+  --diamond: #eab308;
+  --heart: #ef4444;
+  --spade: #64748b;
+  --nt: #a855f7;
+  --pass: #6b7280;
+  --gold: #f59e0b;
+  --danger: #ef4444;
+  --success: #22c55e;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+.header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f1419 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.header h1 span { color: var(--club); }
+.header-nav {
+  display: flex;
+  gap: 8px;
+}
+.header-nav button {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.15s;
+}
+.header-nav button:hover { background: var(--surface); color: var(--text); border-color: var(--accent); }
+.header-nav button.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+.layout {
+  display: grid;
+  grid-template-columns: 340px 1fr 320px;
+  gap: 0;
+  height: calc(100vh - 57px);
+}
+@media (max-width: 1200px) {
+  .layout { grid-template-columns: 280px 1fr 280px; }
+}
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
+  .panel-left, .panel-right { max-height: 40vh; overflow-y: auto; }
+}
+
+.panel-left {
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--bg);
+}
+.panel-center {
+  overflow-y: auto;
+  padding: 20px;
+  background: var(--surface);
+}
+.panel-right {
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--bg);
+}
+
+/* Section headers */
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 16px 0 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title:first-child { margin-top: 0; }
+
+/* Bid buttons */
+.bid-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.bid-btn {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  position: relative;
+  min-height: 44px;
+}
+.bid-btn:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-1px); }
+.bid-btn.selected { border-color: var(--accent2); background: rgba(59,130,246,0.15); box-shadow: 0 0 0 2px rgba(59,130,246,0.3); }
+.bid-btn.club { color: var(--club); }
+.bid-btn.diamond { color: var(--diamond); }
+.bid-btn.heart { color: var(--heart); }
+.bid-btn.spade { color: var(--spade); }
+.bid-btn.nt { color: var(--nt); }
+.bid-btn.pass { color: var(--pass); }
+.bid-btn.level { color: var(--gold); }
+.bid-btn.large { font-size: 0.7rem; }
+
+/* Suit symbols */
+.suit-club { color: var(--club); }
+.suit-diamond { color: var(--diamond); }
+.suit-heart { color: var(--heart); }
+.suit-spade { color: var(--spade); }
+
+/* Sequence display */
+.sequence-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.sequence-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.sequence-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-height: 44px;
+}
+.seq-bid {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.seq-bid:hover { border-color: var(--accent); }
+.seq-bid.active { border-color: var(--accent2); background: rgba(59,130,246,0.15); }
+.seq-bid.opener { border-color: var(--gold); background: rgba(245,158,11,0.1); }
+.seq-bid.responder { border-color: var(--club); background: rgba(22,163,74,0.1); }
+.seq-sep {
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 0 2px;
+}
+.seq-placeholder {
+  color: var(--muted);
+  font-size: 0.85rem;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+.seq-arrow {
+  color: var(--accent2);
+  font-size: 1.1rem;
+  margin-left: 4px;
+}
+
+/* Info card */
+.info-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.info-card h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.info-card h2 .bid-badge {
+  background: var(--accent);
+  color: white;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.9rem;
+}
+.info-card h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent2);
+  margin: 14px 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.info-card p {
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+.info-card ul {
+  list-style: none;
+  margin: 8px 0;
+}
+.info-card li {
+  font-size: 0.88rem;
+  color: var(--text);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(45,63,90,0.5);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.info-card li:last-child { border-bottom: none; }
+.info-card li::before {
+  content: '▸';
+  color: var(--accent2);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.info-card .point-tag {
+  display: inline-block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.75rem;
+  color: var(--gold);
+  font-weight: 600;
+  margin-right: 4px;
+}
+.info-card .note {
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: rgba(0,0,0,0.2);
+  border-left: 3px solid var(--gold);
+  padding: 8px 12px;
+  border-radius: 0 6px 6px 0;
+  margin: 10px 0;
+}
+.info-card .warning {
+  background: rgba(239,68,68,0.1);
+  border-left-color: var(--danger);
+  color: #fca5a5;
+}
+
+/* Available bids panel */
+.available-bids-section {
+  margin-top: 20px;
+}
+.bid-option {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bid-option:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+  transform: translateX(2px);
+}
+.bid-option .bid-code {
+  font-size: 1rem;
+  font-weight: 800;
+  min-width: 50px;
+  text-align: center;
+}
+.bid-option .bid-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.bid-option .bid-desc strong { color: var(--text); display: block; margin-bottom: 2px; }
+.bid-option.highlight {
+  border-color: var(--accent2);
+  background: rgba(59,130,246,0.08);
+}
+.bid-option.passing { border-left: 3px solid var(--pass); }
+
+/* Chapter navigation */
+.chapter-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 16px;
+}
+.chapter-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.82rem;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.chapter-btn:hover { background: var(--surface); border-color: var(--accent); }
+.chapter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+.chapter-btn .ch-num { color: var(--gold); font-weight: 700; margin-right: 6px; }
+.chapter-btn.active .ch-num { color: white; }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+}
+.empty-state .icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  opacity: 0.4;
+}
+.empty-state p { font-size: 0.9rem; }
+
+/* Tags */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.tag-forcing { background: rgba(239,68,68,0.2); color: #fca5a5; }
+.tag-natural { background: rgba(34,197,94,0.2); color: #86efac; }
+.tag-artificial { background: rgba(168,85,247,0.2); color: #d8b4fe; }
+.tag-invitational { background: rgba(245,158,11,0.2); color: #fcd34d; }
+.tag-weak { background: rgba(107,114,128,0.2); color: #9ca3af; }
+.tag-game { background: rgba(59,130,246,0.2); color: #93c5fd; }
+.tag-slam { background: rgba(234,179,8,0.2); color: #fde047; }
+
+/* Example hands */
+.example-hand {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+.example-hand .suit-n { color: var(--club); }
+.example-hand .suit-d { color: var(--diamond); }
+.example-hand .suit-h { color: var(--heart); }
+.example-hand .suit-s { color: var(--spade); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  margin-bottom: 16px;
+  transition: all 0.15s;
+}
+.back-btn:hover { border-color: var(--accent); color: var(--text); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+  .panel-left { border-right: none; border-bottom: 1px solid var(--border); }
+  .panel-right { border-left: none; border-top: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>♣ <span>波兰梅花</span> 叫牌查询</h1>
+  <div class="header-nav">
+    <button class="active" onclick="showChapter('main')">总览</button>
+    <button onclick="showChapter('ch1')">第一章</button>
+    <button onclick="showChapter('ch2')">第二章</button>
+    <button onclick="showChapter('ch3')">第三章</button>
+    <button onclick="showChapter('ch4')">1NT</button>
+    <button onclick="showChapter('ch5')">2♣</button>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- LEFT: Chapters & available bids -->
+  <div class="panel-left" id="panelLeft">
+    <div id="chapterList">
+      <div class="section-title">章节导航</div>
+      <div class="chapter-nav">
+        <button class="chapter-btn active" onclick="showChapter('main')"><span class="ch-num">总</span>波兰梅花概述</button>
+        <button class="chapter-btn" onclick="showChapter('ch1')"><span class="ch-num">一</span>1♣ 开叫</button>
+        <button class="chapter-btn" onclick="showChapter('ch2')"><span class="ch-num">二</span>1♦ 开叫</button>
+        <button class="chapter-btn" onclick="showChapter('ch3')"><span class="ch-num">三</span>1阶高花开叫</button>
+        <button class="chapter-btn" onclick="showChapter('ch4')"><span class="ch-num">四</span>1NT 开叫</button>
+        <button class="chapter-btn" onclick="showChapter('ch5')"><span class="ch-num">五</span>2♣ 开叫</button>
+        <button class="chapter-btn" onclick="showChapter('ch6')"><span class="ch-num">六</span>2♦ 威尔柯茨</button>
+        <button class="chapter-btn" onclick="showChapter('ch7')"><span class="ch-num">七</span>高花弱二</button>
+        <button class="chapter-btn" onclick="showChapter('ch8')"><span class="ch-num">八</span>2NT 开叫</button>
+        <button class="chapter-btn" onclick="showChapter('ch9')"><span class="ch-num">九</span>3NT 开叫</button>
+        <button class="chapter-btn" onclick="showChapter('ch10')"><span class="ch-num">十</span>满贯叫牌</button>
+      </div>
+    </div>
+
+    <div id="availableBidsPanel">
+      <div class="section-title">可点击的叫品</div>
+      <div id="availableBids"></div>
+    </div>
+  </div>
+
+  <!-- CENTER: Sequence & Info -->
+  <div class="panel-center" id="panelCenter">
+    <div class="sequence-panel">
+      <div class="sequence-label">叫牌序列</div>
+      <div class="sequence-display" id="sequenceDisplay">
+        <span class="seq-placeholder">点击下方叫品开始</span>
+      </div>
+    </div>
+
+    <div id="infoArea">
+      <div class="empty-state">
+        <div class="icon">♣</div>
+        <p>选择一个叫品查看详细含义</p>
+        <p style="margin-top:8px;font-size:0.8rem;">可按章节浏览，或直接点击叫品构建叫牌序列</p>
+      </div>
+    </div>
+
+    <div class="available-bids-section" id="nextBidsSection" style="display:none;">
+      <div class="section-title">点击选择下一步</div>
+      <div id="nextBids"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Quick ref -->
+  <div class="panel-right" id="panelRight">
+    <div class="section-title">快速参考</div>
+    <div class="info-card" style="margin-bottom:12px;">
+      <h3 style="margin-top:0;">1♣ 开叫条件</h3>
+      <ul>
+        <li><span class="point-tag">12-15</span> 均型牌，无5张高花，可有5张♣</li>
+        <li><span class="point-tag">12-18</span> 4-4-1-4 三色套牌（单张）</li>
+        <li><span class="point-tag">16-18</span> 6张+♣套，或5张♣+4张高花</li>
+        <li><span class="point-tag">19+</span> 任意牌型，强牌</li>
+      </ul>
+    </div>
+    <div class="info-card" style="margin-bottom:12px;">
+      <h3 style="margin-top:0;">对1♣的应叫</h3>
+      <ul>
+        <li><strong>1♦</strong> — 示弱应叫 0-6点，逼叫一轮</li>
+        <li><strong>1♥/1♠</strong> — 4张套，7+点，逼叫一轮</li>
+        <li><strong>1NT</strong> — 7-10点，均型，无4张高花</li>
+        <li><strong>2♦</strong> — 5张♦+，10+点，无4张高花</li>
+        <li><strong>2♥/2♠</strong> — 好5张或6张+高花，进局逼叫</li>
+        <li><strong>2NT</strong> — 11-12点，均型</li>
+        <li><strong>3m</strong> — 7-9点，7张套</li>
+        <li><strong>3NT</strong> — 13-15点，均型</li>
+      </ul>
+    </div>
+    <div class="info-card" style="margin-bottom:12px;">
+      <h3 style="margin-top:0;">开叫者再叫（1♣-1♦后）</h3>
+      <ul>
+        <li><strong>1♥/1♠</strong> — 4张套，或4-4-1-4三色</li>
+        <li><strong>1NT</strong> — 12-15均型，4-2-3-4分布</li>
+        <li><strong>2♦</strong> — 6张♦+，16-18点</li>
+        <li><strong>2m</strong> — 跳叫，好套，16-18点</li>
+        <li><strong>2NT</strong> — 18-22点均型</li>
+        <li><strong>2♣</strong> — 人工进局逼叫，22+点</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3 style="margin-top:0;">花色符号说明</h3>
+      <ul>
+        <li><span class="suit-club">♣</span> 梅花 (Club)</li>
+        <li><span class="suit-diamond">♦</span> 方块 (Diamond)</li>
+        <li><span class="suit-heart">♥</span> 红心 (Heart)</li>
+        <li><span class="suit-spade">♠</span> 黑桃 (Spade)</li>
+        <li><strong>NT</strong> — 无将 (No Trump)</li>
+        <li><strong>P</strong> — 不叫 (Pass)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const biddingData = {
+  // CHAPTER 1: 1C opening
+  "1C": {
+    title: "1♣ 开叫",
+    meaning: "人工"预备性"开叫，逼叫一轮。波兰梅花的核心叫品。",
+    tags: ["artificial", "forcing"],
+    rules: [
+      { label: "大牌强度", value: "好的12点到差的15点" },
+      { label: "牌型", value: "均型牌：无5张高花及4张♦，可为5-3-3-2型" }
+    ],
+    types: [
+      { label: "第一种（最常见）", desc: "好的12点到差的15点，均型，无5张高花，可有5张♣" },
+      { label: "第二种", desc: "12-18点，4-4-1-4三色套牌（单张）" },
+      { label: "第三种", desc: "16-18点，至少6张♣套，或5张♣+4张高花" },
+      { label: "第四种", desc: "19+点任意牌型，或好18点，或8+赢墩" }
+    ],
+    examples: [
+      { label: "可开叫1♣", hand: ["A853", "KQ76", "85", "A105"] },
+      { label: "可开叫1♣", hand: ["Q7", "AJ8", "K73", "QJ862"] },
+      { label: "不应开叫1♣", desc: "6张套 → 应开叫2♣", hand: ["A5", "K82", "64", "AQ9642"] }
+    ],
+    next: {
+      "1D": { label: "示弱应叫 0-6点", tags: ["artificial", "forcing"], meaning: "任何0-6点的牌都必须应叫1♦，即使持有一手7张套的畸形牌。逼叫一轮。", detail: "1♦是示弱应叫，逼叫一轮。即使0点也要应叫，以后总有机会告诉同伴牌力所在。" },
+      "1H": { label: "4张♥套 7+点", tags: ["natural", "forcing"], meaning: "至少4张♥，7+大牌点，逼叫一轮。应叫者有义务优先显示高花，即使持更长低花。", detail: "波兰梅花中，应叫者不管大牌强度如何，都有义务首先显示高花套。" },
+      "1S": { label: "4张♠套 7+点", tags: ["natural", "forcing"], meaning: "至少4张♠，7+大牌点，逼叫一轮。", detail: "应叫1♠显示至少4张♠套，7+点，逼叫一轮。" },
+      "1NT": { label: "均型 7-10点", tags: ["natural"], meaning: "7-10点均型牌，没有4张高花。不逼叫。", detail: "应叫1NT表示7-10点均型，没有4张高花套。" },
+      "2D": { label: "5张+♦套 10+点", tags: ["natural", "forcing"], meaning: "至少5张♦，10+大牌点，无4张高花。逼叫一轮。", detail: "2♦是自然的5张以上♦套，10+点，无4张高花。进局逼叫性弱于2♥/2♠。" },
+      "2H": { label: "好5张/6张+♥ 进局逼叫", tags: ["natural", "game", "forcing"], meaning: "至少5张质量好的♥套或6张以上♥，进局逼叫。", detail: "2♥跳应叫表示好5张或6张以上♥套，进局逼叫。" },
+      "2S": { label: "好5张/6张+♠ 进局逼叫", tags: ["natural", "game", "forcing"], meaning: "至少5张质量好的♠套或6张以上♠，进局逼叫。" },
+      "2NT": { label: "均型 11-12点", tags: ["natural", "invitational"], meaning: "11-12点均型牌，没有4张高花。邀叫。", detail: "应叫2NT表示11-12点均型，邀叫进局。" },
+      "3D": { label: "7张♦套 7-9点", tags: ["natural", "weak"], meaning: "7张以上♦套，7-9大牌点，自然阻击叫。" },
+      "3H": { label: "7张♥套 7-9点", tags: ["natural", "weak"], meaning: "7张以上♥套，7-9大牌点，自然阻击叫。" },
+      "3S": { label: "7张♠套 7-9点", tags: ["natural", "weak"], meaning: "7张以上♠套，7-9大牌点，自然阻击叫。" },
+      "3NT": { label: "均型 13-15点", tags: ["game"], meaning: "13-15点均型牌，没有4张高花。成局定约。" }
+    }
+  },
+
+  // After 1C - 1D response
+  "1C-1D": {
+    title: "1♣ - 1♦（示弱）",
+    meaning: "应叫者持0-6点，任何牌型。开叫者必须继续描述牌情。",
+    tags: ["weak", "forcing"],
+    next: {
+      "1H": { label: "4张♥套 或 4-4-1-4三色", tags: ["natural"], meaning: "① 12-15点均型，4张♥+2张♠（非4-4-1-4）；② 12-22点三色套，单张♠；③ 16-18点4张♥+5张♣；④ 19-22点非均型4张♥。" },
+      "1S": { label: "4张♠套 或 4-4-1-4三色", tags: ["natural"], meaning: "① 12-15点均型，4张♠+2张♥；② 12-22点三色套，单张♥；③ 16-18点4张♠+5张♣；④ 19-22点非均型4张♠。" },
+      "1NT": { label: "12-15点 4-2-3-4均型", tags: ["natural"], meaning: "开叫者持12-15点均型牌，4张♠+2张♥的高花分布（或类似）。不逼叫，应叫者可选择pass。" },
+      "2D": { label: "6张+♦套 16-18点", tags: ["natural", "forcing"], meaning: "至少6张♦，16-18大牌点。没有4张高花。" },
+      "2H": { label: "跳叫6张+♦ 16-18点", tags: ["natural", "forcing"], meaning: "跳叫显示6张以上好♦套，16-18点，约9个打牌赢墩。" },
+      "2S": { label: "跳叫6张+♦ 16-18点", tags: ["natural"], meaning: "跳叫显示6张以上好♦套，16-18点。" },
+      "2NT": { label: "18-22点 均型", tags: ["natural", "invitational"], meaning: "好的18点到差的22点均型牌。邀叫进局。" },
+      "2C": { label: "人工进局逼叫 22+点", tags: ["artificial", "game", "forcing"], meaning: "开叫者持极强牌（22+点），人工进局逼叫。开叫者必须至少叫到局或加倍对方。" }
+    }
+  },
+
+  // After 1C - 1H response
+  "1C-1H": {
+    title: "1♣ - 1♥（积极应叫）",
+    meaning: "应叫者持7+点，至少4张♥。逼叫一轮。开叫者需描述牌力与牌型。",
+    tags: ["natural", "forcing"],
+    next: {
+      "1S": { label: "4张♠套", tags: ["natural"], meaning: "开叫者持4张♠套，不够跳叫实力。不逼叫。" },
+      "1NT": { label: "无将特征", tags: ["natural"], meaning: "如果这手牌看上去有"无将特征"，开叫者可再叫1NT。" },
+      "2H": { label: "简单加叫", tags: ["natural"], meaning: "对同伴♥有4张支持，加叫到2♥。不逼叫。" },
+      "2S": { label: "6张+强套 8+赢墩", tags: ["natural"], meaning: "开叫者持6张以上♥强套，约8个打牌赢墩。不够进局逼叫。" },
+      "2NT": { label: "22-23点 均型", tags: ["natural", "invitational"], meaning: "开叫者持22-23点均型牌。邀叫进局。" },
+      "3H": { label: "9个打牌赢墩", tags: ["natural", "game"], meaning: "约9个打牌赢墩，有进局实力。" },
+      "3NT": { label: "赌博式", tags: ["natural", "game"], meaning: ""赌博式"叫品，表示7张以上坚固♥套，其他花色至少两门有止。" }
+    }
+  },
+
+  // After 1C - 1S response
+  "1C-1S": {
+    title: "1♣ - 1♠（积极应叫）",
+    meaning: "应叫者持7+点，至少4张♠。逼叫一轮。开叫者需描述牌力与牌型。",
+    tags: ["natural", "forcing"],
+    next: {
+      "1NT": { label: "无将特征", tags: ["natural"], meaning: "如果这手牌看上去有"无将特征"，开叫者可再叫1NT。" },
+      "2S": { label: "简单加叫", tags: ["natural"], meaning: "对同伴♠有4张支持，加叫到2♠。不逼叫。" },
+      "2C": { label: "4张♣套", tags: ["natural"], meaning: "没有4张♠支持时，开叫者叫4张套（如果有的话）。" },
+      "2NT": { label: "22-23点 均型", tags: ["natural", "invitational"], meaning: "开叫者持22-23点均型牌。邀叫进局。" },
+      "3S": { label: "9个打牌赢墩", tags: ["natural", "game"], meaning: "约9个打牌赢墩，有进局实力。" }
+    }
+  },
+
+  // After 1C - 1NT response
+  "1C-1NT": {
+    title: "1♣ - 1NT",
+    meaning: "应叫者持7-10点，均型牌，没有4张高花。不逼叫。开叫者需描述牌力。",
+    tags: ["natural"],
+    next: {
+      "2C": { label: "4张♣套 弱牌", tags: ["natural"], meaning: "开叫者持4张♣套，弱牌（12-15均型）。不逼叫。" },
+      "2D": { label: "6张+♦套 16-18点", tags: ["natural"], meaning: "开叫者持6张以上♦，16-18点。" },
+      "2H": { label: "4张♥套", tags: ["natural"], meaning: "开叫者持4张♥套，不够跳叫实力。" },
+      "2S": { label: "4张♠套", tags: ["natural"], meaning: "开叫者持4张♠套，不够跳叫实力。" },
+      "2NT": { label: "18-22点 均型", tags: ["natural", "invitational"], meaning: "开叫者好的18点到差的22点均型。邀叫。" }
+    }
+  },
+
+  // CHAPTER 2: 1D opening
+  "1D": {
+    title: "1♦ 开叫",
+    meaning: "自然开叫，显示至少4张♦套（或4441单张♦），12-21大牌点。",
+    tags: ["natural"],
+    rules: [
+      { label: "大牌强度", value: "12-21点（第一、二家位置）；可低至10点（第三家）" },
+      { label: "牌型", value: "至少4张♦；或4-4-1-4三色套（单张♦）" }
+    ],
+    types: [
+      { label: "4441", desc: "4-4-4-1牌型，单张♦，12-21点。开叫1♦而非1♣。" },
+      { label: "正常4+♦", desc: "至少4张♦，12-21点。可为均型或非均型。" }
+    ],
+    next: {
+      "1H": { label: "4张♥套 7+点", tags: ["natural", "forcing"], meaning: "至少4张♥，7+点。逼叫一轮。" },
+      "1S": { label: "4张♠套 7+点", tags: ["natural", "forcing"], meaning: "至少4张♠，7+点。逼叫一轮。" },
+      "1NT": { label: "无4张高花 7-10点", tags: ["natural"], meaning: "应叫者没有4张高花，7-10点均型。不逼叫。" },
+      "2C": { label: "5张+♣套 10+点", tags: ["natural", "forcing"], meaning: "5张以上♣，10+点，无4张高花。" },
+      "2D": { label: "4张支持 6-10点", tags: ["natural"], meaning: "应叫者对♦有4张以上支持，6-10点。" },
+      "2H": { label: "好5张/6张+♥ 进局逼叫", tags: ["natural", "game", "forcing"], meaning: "好5张或6张以上♥，进局逼叫。" },
+      "2S": { label: "好5张/6张+♠ 进局逼叫", tags: ["natural", "game", "forcing"], meaning: "好5张或6张以上♠，进局逼叫。" },
+      "2NT": { label: "11-12点 均型", tags: ["natural", "invitational"], meaning: "11-12点均型，无4张高花。邀叫。" },
+      "3D": { label: "5张支持 好的13-15点", tags: ["natural", "game"], meaning: "对♦有5张支持，13-15点，均型。" },
+      "3NT": { label: "13-15点 均型", tags: ["game"], meaning: "13-15点均型，无4张高花，可打3NT。" }
+    }
+  },
+
+  // CHAPTER 3: 1M opening
+  "1H": {
+    title: "1♥ 开叫",
+    meaning: "自然开叫，至少5张♥套，12-21大牌点（第一、二家）。",
+    tags: ["natural"],
+    rules: [
+      { label: "大牌强度", value: "12-21点（第一、二家）" },
+      { label: "牌型", value: "至少5张♥，可有其他4张套" }
+    ],
+    next: {
+      "1S": { label: "4张♠套 7+点", tags: ["natural", "forcing"], meaning: "至少4张♠，7+点。逼叫一轮。" },
+      "1NT": { label: "无4张♠ 7-10点", tags: ["natural"], meaning: "没有4张♠，7-10点均型。不逼叫。" },
+      "2C": { label: "5张+♣套 10+点", tags: ["natural", "forcing"], meaning: "5张以上♣套，10+点。" },
+      "2D": { label: "5张+♦套 10+点", tags: ["natural", "forcing"], meaning: "5张以上♦套，10+点。" },
+      "2H": { label: "4张支持 6-10点", tags: ["natural"], meaning: "对♥有4张以上支持，6-10点。" },
+      "2S": { label: "好5张/6张+♠ 进局逼叫", tags: ["natural", "game", "forcing"], meaning: "好5张或6张以上♠，进局逼叫。" },
+      "2NT": { label: "11-12点 均型", tags: ["natural", "invitational"], meaning: "11-12点均型，无4张♠。邀叫。" },
+      "3H": { label: "4张支持 好的13-15点", tags: ["natural", "game"], meaning: "对♥有4张支持，13-15点均型。" },
+      "3NT": { label: "13-15点 均型", tags: ["game"], meaning: "13-15点均型，有♥止张。" },
+      "4H": { label: "止叫", tags: ["game"], meaning: "应叫者持弱牌，有4张支持，直接封局。" }
+    }
+  },
+
+  "1S": {
+    title: "1♠ 开叫",
+    meaning: "自然开叫，至少5张♠套（或4张♠+4张♥，双高套），12-21大牌点。",
+    tags: ["natural"],
+    rules: [
+      { label: "大牌强度", value: "12-21点（第一、二家）" },
+      { label: "牌型", value: "至少5张♠，或4张♠+4张♥双高套" }
+    ],
+    next: {
+      "1NT": { label: "无4张♠ 7-10点", tags: ["natural"], meaning: "没有4张♠，7-10点均型。不逼叫。" },
+      "2C": { label: "5张+♣套 10+点", tags: ["natural", "forcing"], meaning: "5张以上♣套，10+点。" },
+      "2D": { label: "5张+♦套 10+点", tags: ["natural", "forcing"], meaning: "5张以上♦套，10+点。" },
+      "2H": { label: "4张♥套 10+点", tags: ["natural", "forcing"], meaning: "4张♥，10+点，询问开叫者是否双高套。" },
+      "2S": { label: "4张支持 6-10点", tags: ["natural"], meaning: "对♠有4张以上支持，6-10点。" },
+      "2NT": { label: "11-12点 均型", tags: ["natural", "invitational"], meaning: "11-12点均型，无4张♠。邀叫。" },
+      "3S": { label: "4张支持 好的13-15点", tags: ["natural", "game"], meaning: "对♠有4张支持，13-15点均型。" },
+      "3NT": { label: "13-15点 均型", tags: ["game"], meaning: "13-15点均型，有♠止张。" },
+      "4S": { label: "止叫", tags: ["game"], meaning: "应叫者持弱牌，有4张支持，直接封局。" }
+    }
+  },
+
+  // CHAPTER 4: 1NT opening
+  "1NT": {
+    title: "1NT 开叫",
+    meaning: "强无将开叫，表示好的12点到坏的15点均型牌，没有4张高花。",
+    tags: ["natural", "game"],
+    rules: [
+      { label: "大牌强度", value: "好的12点到坏的15点" },
+      { label: "牌型", value: "均型，无4张高花（可有5张低花）" }
+    ],
+    next: {
+      "2C": { label: "斯台曼约定叫", tags: ["artificial", "forcing"], meaning: "询问开叫者是否有4张高花套。2♦答叫：有4张高花（至少4-3配合）；2NT/3C/3D：无4张高花。" },
+      "2D": { label: "转移叫到♥", tags: ["artificial", "forcing"], meaning: "应叫者持5张♥，要求开叫者叫2♥。然后应叫者可叫2♠显示5张♠+4张♥双套。" },
+      "2H": { label: "5张♠转移", tags: ["artificial", "forcing"], meaning: "持5张♠，要求开叫者叫2♠。是自然叫品，显示5张♠。" },
+      "2NT": { label: "邀叫", tags: ["invitational"], meaning: "11-12点均型，询问开叫者是否愿意进局。开叫者持好15点时叫3NT或4m。" },
+      "3C": { label: "杰科贝转移叫", tags: ["artificial", "forcing"], meaning: "应叫者持5张♥+4张♠，要求开叫者叫2♥。" },
+      "3NT": { label: "成局", tags: ["game"], meaning: "应叫者持13-15点均型，直接封3NT。" }
+    }
+  },
+
+  // CHAPTER 5: 2C opening
+  "2C": {
+    title: "2♣ 开叫",
+    meaning: "强牌开叫，相当于埃坷的强二开叫。22+点，或非均型19+点（埃坷式强二）。",
+    tags: ["artificial", "game", "forcing"],
+    rules: [
+      { label: "大牌强度", value: "22+点均型，或19+点非均型（埃坷强二型）" },
+      { label: "牌型", value: "任意" }
+    ],
+    next: {
+      "2D": { label: "等待性应叫", tags: ["artificial"], meaning: "应叫者没有立即回答的手段，等待开叫者进一步描述牌情。逼叫一轮。" },
+      "2H": { label: "4张♥套 7+点", tags: ["natural", "forcing"], meaning: "应叫者有4张♥，7+点。" },
+      "2S": { label: "4张♠套 7+点", tags: ["natural", "forcing"], meaning: "应叫者有4张♠，7+点。" },
+      "2NT": { label: "均型 0-7点", tags: ["natural"], meaning: "应叫者0-7点均型，不知如何应叫时的保守选择。" },
+      "3C": { label: "5张+♣套 7+点", tags: ["natural"], meaning: "应叫者有5张以上♣套。" },
+      "3D": { label: "5张+♦套 7+点", tags: ["natural"], meaning: "应叫者有5张以上♦套。" }
+    }
+  },
+
+  // CHAPTER 6: 2D Walsh
+  "2D": {
+    title: "2♦ 开叫（威尔柯茨2♦）",
+    meaning: "弱二开叫，表示持有至少6张低花套，或5张低花+4张高花套，6-11大牌点。",
+    tags: ["weak", "natural"],
+    rules: [
+      { label: "大牌强度", value: "6-11点" },
+      { label: "牌型", value: "6张以上低花套，或5张低花+4张高花" }
+    ],
+    next: {
+      "2H": { label: "斯台曼", tags: ["artificial", "forcing"], meaning: "询问高花套。开叫者答叫：有4张高花套时叫出，无4张高花时叫2NT。" },
+      "2S": { label: "自然应叫", tags: ["natural"], meaning: "应叫者有4张♠，自然应叫。" },
+      "2NT": { label: "等待性应叫", tags: ["artificial"], meaning: "应叫者不知道该选哪个高花时的保守选择。" },
+      "3D": { label: "加叫进局", tags: ["game"], meaning: "应叫者对♦有支持，愿意进局。" }
+    }
+  },
+
+  // CHAPTER 7: High card weak two
+  "2H_weak": {
+    title: "2♥ 弱二开叫",
+    meaning: "弱二开叫，表示6张以上♥套，6-11大牌点。阻击性开叫。",
+    tags: ["weak", "natural"],
+    rules: [
+      { label: "大牌强度", value: "6-11点" },
+      { label: "牌型", value: "6张以上♥套" }
+    ],
+    next: {
+      "2S": { label: "斯台曼", tags: ["artificial", "forcing"], meaning: "询问♥配合及牌力。开叫者有3张支持时叫3♥，否则叫2♠。" },
+      "2NT": { label: "询问", tags: ["artificial", "forcing"], meaning: "应叫者持邀叫实力，询问开叫者具体牌力。" },
+      "3H": { label: "加叫", tags: ["game"], meaning: "应叫者有3张♥支持，邀叫实力。" },
+      "4H": { label: "封局", tags: ["game"], meaning: "应叫者有4张♥支持，直接封局。" }
+    }
+  },
+
+  "2S_weak": {
+    title: "2♠ 弱二开叫",
+    meaning: "弱二开叫，表示6张以上♠套，6-11大牌点。阻击性开叫。",
+    tags: ["weak", "natural"],
+    rules: [
+      { label: "大牌强度", value: "6-11点" },
+      { label: "牌型", value: "6张以上♠套" }
+    ],
+    next: {
+      "2NT": { label: "询问", tags: ["artificial", "forcing"], meaning: "应叫者持邀叫实力，询问开叫者具体牌力。" },
+      "3S": { label: "加叫", tags: ["game"], meaning: "应叫者有3张♠支持，邀叫实力。" },
+      "4S": { label: "封局", tags: ["game"], meaning: "应叫者有4张♠支持，直接封局。" }
+    }
+  },
+
+  // CHAPTER 8: 2NT opening
+  "2NT": {
+    title: "2NT 开叫",
+    meaning: "双套牌阻击叫，显示两门低花5-5或更长的套，6-11点（通常无局时）。",
+    tags: ["weak", "natural"],
+    rules: [
+      { label: "大牌强度", value: "6-11点" },
+      { label: "牌型", value: "两门低花5-5或更长，无高花" }
+    ],
+    next: {
+      "3C": { label: "自然应叫", tags: ["natural"], meaning: "应叫者有♣套，自然应叫。" },
+      "3D": { label: "自然应叫", tags: ["natural"], meaning: "应叫者有♦套，自然应叫。" },
+      "3H": { label: "止叫", tags: ["game"], meaning: "应叫者对♥有止张，封局。" },
+      "3S": { label: "止叫", tags: ["game"], meaning: "应叫者对♠有止张，封局。" },
+      "3NT": { label: "成局", tags: ["game"], meaning: "应叫者对两门低花都有止张，封3NT。" },
+      "3S": { label: "询问", tags: ["artificial", "forcing"], meaning: "应叫者持好牌，询问开叫者低花分配。" }
+    }
+  },
+
+  // CHAPTER 9: 3NT opening
+  "3NT": {
+    title: "3NT 开叫（赌博性）",
+    meaning: "赌博性3NT，表示持有一个可吃通的低花7张套，旁套几乎没有牌力。",
+    tags: ["gambling", "game"],
+    rules: [
+      { label: "大牌强度", value: "可变，通常10-12点" },
+      { label: "牌型", value: "低花7+张套，旁套无大牌" }
+    ],
+    next: {
+      "4C": { label: "要打♦套", tags: ["game"], meaning: "应叫者想打开叫者的低花套。开叫者持♦套时pass，否则改叫4♥。" },
+      "4D": { label: "要打♣套", tags: ["game"], meaning: "应叫者想打开叫者的♣套。开叫者持♣套时pass，否则改叫4♥。" },
+      "4NT": { label: "小满贯邀叫", tags: ["slam", "invitational"], meaning: "自然性质的小满贯邀叫。开叫者持8张低花或边花有Q时可接受。" },
+      "4H": { label: "止叫", tags: ["game"], meaning: "应叫者对♥有止张，封4♥。" },
+      "4S": { label: "止叫", tags: ["game"], meaning: "应叫者对♠有止张，封4♠。" }
+    }
+  },
+
+  // CHAPTER 10: Slam
+  "slam": {
+    title: "满贯叫牌",
+    meaning: "波兰梅花的满贯叫牌主要通过扣叫进行。遵循"经济原则"：最便宜的扣叫有最高优先级。",
+    tags: ["slam", "forcing"],
+    rules: [
+      { label: "扣叫定义", value: "既不是支持同伴花色，也不是无将试探的3阶以上叫品，显示最近的第一或第二轮控制" },
+      { label: "短套显示", value: "单张或缺门的扣叫，帮助判断配合程度" },
+      { label: "经济原则", value: "最便宜的扣叫优先级最高，K或单张经常在A或缺门之前显示" }
+    ],
+    types: [
+      { label: "大牌控制扣叫", desc: "显示K或A，在经济阶次上扣叫" },
+      { label: "短套显示扣叫", desc: "单张或缺门，帮助同伴判断配合" }
+    ],
+    examples: [
+      { label: "序列示例：1NT-2♣(斯台曼)；2♥-3♦", desc: "3♦是扣叫，显示♦有第一或第二轮控制" },
+      { label: "序列示例：1♠-4♠；4NT-5♦", desc: "5♦是扣叫，显示♦有控制" }
+    ]
+  }
+};
+
+// ===== STATE =====
+let currentChapter = 'main';
+let sequence = []; // [{bid, role, label}]
+let selectedBidKey = null;
+
+function getBidKey(bid) {
+  return bid.replace(/[♣♦♥♠]/g, (m) => ({'♣':'C','♦':'D','♥':'H','♠':'S'})[m]);
+}
+
+function formatBid(key) {
+  const suitMap = { 'C':'♣', 'D':'♦', 'H':'♥', 'S':'♠' };
+  const suit = key.match(/[CDHS]$/)?.[0];
+  const level = key.match(/^\d+/)?.[0] || '';
+  const suitSym = suit ? (suitMap[suit] || suit) : '';
+  return level + suitSym;
+}
+
+function getBidClass(key) {
+  if (key === 'P' || key === 'PASS') return 'pass';
+  if (key === 'NT') return 'nt';
+  const suit = key.match(/[CDHS]$/)?.[0];
+  if (suit === 'C') return 'club';
+  if (suit === 'D') return 'diamond';
+  if (suit === 'H') return 'heart';
+  if (suit === 'S') return 'spade';
+  return '';
+}
+
+function renderBidButton(key, label, onclick, extraClass) {
+  const suitMap = { 'C':'♣','D':'♦','H':'♥','S':'♠' };
+  const level = label.match(/^\d+/)?.[0] || '';
+  const suitChar = label.match(/[CDHS]$/)?.[0] || '';
+  const suitSym = suitChar ? suitMap[suitChar] || suitChar : '';
+  const display = level + suitSym;
+  const cls = getBidClass(key) + (extraClass ? ' ' + extraClass : '');
+  return `<button class="bid-btn ${cls}" onclick="${onclick}" title="${label}">${display}</button>`;
+}
+
+// ===== NAVIGATION =====
+function showChapter(ch) {
+  currentChapter = ch;
+  document.querySelectorAll('.chapter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.header-nav button').forEach(b => b.classList.remove('active'));
+  const idx = ['main','ch1','ch2','ch3','ch4','ch5'].indexOf(ch);
+  if (idx >= 0) document.querySelectorAll('.header-nav button')[idx]?.classList.add('active');
+  const chBtn = document.querySelector(`.chapter-btn[onclick*="${ch}"]`);
+  if (chBtn) chBtn.classList.add('active');
+
+  sequence = [];
+  selectedBidKey = null;
+  updateSequenceDisplay();
+  renderChapterContent(ch);
+}
+
+// ===== RENDER CHAPTER CONTENT =====
+function renderChapterContent(ch) {
+  const infoArea = document.getElementById('infoArea');
+  const availBids = document.getElementById('availableBids');
+  const nextBidsSection = document.getElementById('nextBidsSection');
+
+  nextBidsSection.style.display = 'none';
+
+  let content = '';
+  let bids = [];
+
+  switch(ch) {
+    case 'main':
+      content = `
+        <div class="info-card">
+          <h2>♣ 波兰梅花 <span style="font-size:0.85rem;font-weight:400;color:var(--muted)">Polish Club</span></h2>
+          <p>波兰梅花是一种在中国流行的、人工性与自然性相结合的桥牌叫牌体系。它的核心是<strong>1♣开叫</strong>——这是一个逼叫性的"预备"叫品，用于描述12点以上的各种牌型。</p>
+          <h3>体系特点</h3>
+          <ul>
+            <li><strong>1♣开叫逼叫一轮</strong>，应叫者即使0点也必须应叫（使用1♦示弱应叫）</li>
+            <li>应叫者有义务优先显示4张高花套，即使持更长低花</li>
+            <li>开叫者的再叫大多是自然的、不逼叫的，给应叫者留下选择空间</li>
+            <li>满贯叫牌采用经济扣叫原则</li>
+          </ul>
+          <h3>开始查询</h3>
+          <p>点击左侧章节进入详细叫牌线路，或直接点击下方按钮从<strong>1♣开叫</strong>开始构建叫牌序列。</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:16px;">
+          ${renderBidButton('1C', '1♣', "addBidToSeq('1C')", '')}
+          ${renderBidButton('1D', '1♦', "addBidToSeq('1D')", '')}
+          ${renderBidButton('1H', '1♥', "addBidToSeq('1H')", '')}
+          ${renderBidButton('1S', '1♠', "addBidToSeq('1S')", '')}
+          ${renderBidButton('1NT', '1NT', "addBidToSeq('1NT')", '')}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px;">
+          ${renderBidButton('2C', '2♣', "addBidToSeq('2C')", '')}
+          ${renderBidButton('2D', '2♦', "addBidToSeq('2D')", '')}
+          ${renderBidButton('2H', '2♥', "addBidToSeq('2H')", '')}
+          ${renderBidButton('2S', '2♠', "addBidToSeq('2S')", '')}
+          ${renderBidButton('2NT', '2NT', "addBidToSeq('2NT')", '')}
+        </div>
+      `;
+      bids = [];
+      break;
+
+    case 'ch1':
+      content = buildChapterInfo('1C');
+      bids = [
+        {key:'1D',label:'1♦ 示弱应叫 0-6点'},
+        {key:'1H',label:'1♥ 4张♥ 7+点'},
+        {key:'1S',label:'1♠ 4张♠ 7+点'},
+        {key:'1NT',label:'1NT 7-10点 均型'},
+        {key:'2D',label:'2♦ 5张+♦ 10+点'},
+        {key:'2H',label:'2♥ 好5张/6张+♥ 进局逼'},
+        {key:'2S',label:'2♠ 好5张/6张+♠ 进局逼'},
+        {key:'2NT',label:'2NT 11-12点 均型'},
+        {key:'3D',label:'3♦ 7张套 7-9点'},
+        {key:'3NT',label:'3NT 13-15点 均型'},
+      ];
+      break;
+
+    case 'ch2':
+      content = buildChapterInfo('1D');
+      bids = [
+        {key:'1H',label:'1♥ 4张♥ 7+点'},
+        {key:'1S',label:'1♠ 4张♠ 7+点'},
+        {key:'1NT',label:'1NT 7-10点 均型'},
+        {key:'2C',label:'2♣ 5张+♣ 10+点'},
+        {key:'2D',label:'2♦ 4张支持 6-10点'},
+        {key:'2H',label:'2♥ 好5张/6张+♥ 进局逼'},
+        {key:'2S',label:'2♠ 好5张/6张+♠ 进局逼'},
+        {key:'2NT',label:'2NT 11-12点 均型'},
+      ];
+      break;
+
+    case 'ch3':
+      content = buildChapterInfo('1H') + '<div style="margin-top:12px;">' + buildChapterInfo('1S').replace(/<div class="info-card">/, '<div class="info-card" style="margin-top:12px;">') + '</div>';
+      bids = [
+        {key:'1S',label:'1♠ 4张♠ 7+点'},
+        {key:'1NT',label:'1NT 7-10点'},
+        {key:'2C',label:'2♣ 5张+♣ 10+点'},
+        {key:'2D',label:'2♦ 5张+♦ 10+点'},
+        {key:'2H',label:'2♥ 4张支持 6-10点'},
+        {key:'2S',label:'2♠ 好5张/6张+♠ 进局逼'},
+        {key:'2NT',label:'2NT 11-12点'},
+        {key:'3H',label:'3♥ 4张支持 好13-15点'},
+        {key:'3NT',label:'3NT 13-15点'},
+      ];
+      break;
+
+    case 'ch4':
+      content = buildChapterInfo('1NT');
+      bids = [
+        {key:'2C',label:'2♣ 斯台曼'},
+        {key:'2D',label:'2♦ 转移叫→♥'},
+        {key:'2H',label:'2♥ 转移叫→♠'},
+        {key:'2S',label:'2♠ 5张♠自然'},
+        {key:'2NT',label:'2NT 邀叫 11-12点'},
+        {key:'3C',label:'3♣ 杰科贝转移'},
+        {key:'3NT',label:'3NT 成局'},
+      ];
+      break;
+
+    case 'ch5':
+      content = buildChapterInfo('2C');
+      bids = [
+        {key:'2D',label:'2♦ 等待性应叫'},
+        {key:'2H',label:'2♥ 4张♥ 7+点'},
+        {key:'2S',label:'2♠ 4张♠ 7+点'},
+        {key:'2NT',label:'2NT 均型 0-7点'},
+        {key:'3C',label:'3♣ 5张+♣'},
+        {key:'3D',label:'3♦ 5张+♦'},
+      ];
+      break;
+
+    case 'ch6':
+      content = buildChapterInfo('2D');
+      bids = [
+        {key:'2H',label:'2♥ 斯台曼'},
+        {key:'2S',label:'2♠ 4张♠'},
+        {key:'2NT',label:'2NT 等待'},
+        {key:'3D',label:'3♦ 加叫进局'},
+      ];
+      break;
+
+    case 'ch7':
+      content = buildChapterInfo('2H_weak') + '<div style="margin-top:12px;">' + buildChapterInfo('2S_weak').replace(/<div class="info-card">/, '<div class="info-card" style="margin-top:12px;">') + '</div>';
+      bids = [
+        {key:'2S',label:'2♠ 斯台曼（对2♥）'},
+        {key:'2NT',label:'2NT 询问（对2♥）'},
+        {key:'3H',label:'3♥ 加叫（对2♥）'},
+        {key:'2NT',label:'2NT 询问（对2♠）'},
+        {key:'3S',label:'3♠ 加叫（对2♠）'},
+      ];
+      break;
+
+    case 'ch8':
+      content = buildChapterInfo('2NT');
+      bids = [
+        {key:'3C',label:'3♣ ♣套'},
+        {key:'3D',label:'3♦ ♦套'},
+        {key:'3H',label:'3♥ 止叫'},
+        {key:'3S',label:'3♠ 止叫'},
+        {key:'3NT',label:'3NT 成局'},
+        {key:'3S',label:'3♠ 询问分配'},
+      ];
+      break;
+
+    case 'ch9':
+      content = buildChapterInfo('3NT');
+      bids = [
+        {key:'4C',label:'4♣ 要打♦套'},
+        {key:'4D',label:'4♦ 要打♣套'},
+        {key:'4NT',label:'4NT 小满贯邀叫'},
+        {key:'4H',label:'4♥ 止叫'},
+        {key:'4S',label:'4♠ 止叫'},
+      ];
+      break;
+
+    case 'ch10':
+      content = buildChapterInfo('slam');
+      bids = [];
+      break;
+
+    default:
+      content = '<div class="empty-state"><div class="icon">📋</div><p>选择章节查看</p></div>';
+  }
+
+  infoArea.innerHTML = content;
+
+  if (bids.length > 0) {
+    availBids.innerHTML = bids.map(b => `
+      <div class="bid-option" onclick="addBidToSeq('${b.key}')">
+        <span class="bid-code ${getBidClass(b.key)}">${formatBid(b.key)}</span>
+        <span class="bid-desc">${b.label}</span>
+      </div>
+    `).join('');
+  } else {
+    availBids.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;padding:8px 0;">点击章节查看详细叫品</div>';
+  }
+}
+
+function buildChapterInfo(key) {
+  const d = biddingData[key];
+  if (!d) return '';
+
+  let html = `<div class="info-card">
+    <h2>${d.title}</h2>`;
+
+  if (d.meaning) {
+    html += `<p style="font-size:0.95rem;color:var(--accent2);margin-bottom:12px;">${d.meaning}</p>`;
+  }
+
+  if (d.tags) {
+    html += `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">`;
+    html += d.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('');
+    html += `</div>`;
+  }
+
+  if (d.rules) {
+    html += `<h3>基本规则</h3><ul>`;
+    html += d.rules.map(r => `<li><strong>${r.label}：</strong>${r.value}</li>`).join('');
+    html += `</ul>`;
+  }
+
+  if (d.types) {
+    html += `<h3>牌型分类</h3><ul>`;
+    html += d.types.map(t => `<li><strong>${t.label}：</strong>${t.desc}</li>`).join('');
+    html += `</ul>`;
+  }
+
+  if (d.examples) {
+    d.examples.forEach(ex => {
+      if (ex.desc) {
+        html += `<div class="note">${ex.desc}</div>`;
+      }
+      if (ex.hand) {
+        const suits = ['♣','♦','♥','♠'];
+        const handStr = ex.hand.map((line, i) => {
+          const suit = suits[i];
+          const cls = ['suit-club','suit-diamond','suit-heart','suit-spade'][i];
+          return `<span class="${cls}">${suit}：${line}</span>`;
+        }).join('&nbsp;&nbsp;');
+        html += `<div class="example-hand"><strong>${ex.label}：</strong><br>${handStr}</div>`;
+      }
+    });
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+// ===== BID SEQUENCE =====
+function addBidToSeq(key) {
+  const role = sequence.length % 2 === 0 ? 'opener' : 'responder';
+  const d = biddingData[key];
+  const label = d ? d.title.split('（')[0] : formatBid(key);
+
+  sequence.push({ key, role, label });
+  updateSequenceDisplay();
+  showBidInfo(key);
+
+  // Update next available bids
+  const nextBidsSection = document.getElementById('nextBidsSection');
+  const nextBids = document.getElementById('nextBids');
+
+  // Build context key
+  let contextKey = key;
+  if (sequence.length > 2) {
+    const prev = sequence[sequence.length - 2];
+    contextKey = `${prev.key}-${key}`;
+  }
+
+  const nextData = d?.next;
+  if (nextData) {
+    nextBidsSection.style.display = 'block';
+    nextBids.innerHTML = Object.entries(nextData).map(([k, v]) => `
+      <div class="bid-option" onclick="addBidToSeq('${k}')">
+        <span class="bid-code ${getBidClass(k)}">${formatBid(k)}</span>
+        <span class="bid-desc"><strong>${v.label}</strong><br>${v.meaning}</span>
+      </div>
+    `).join('');
+  } else {
+    nextBidsSection.style.display = 'none';
+  }
+}
+
+function updateSequenceDisplay() {
+  const display = document.getElementById('sequenceDisplay');
+  if (sequence.length === 0) {
+    display.innerHTML = '<span class="seq-placeholder">点击下方叫品开始</span>';
+    return;
+  }
+
+  display.innerHTML = sequence.map((s, i) => {
+    const isActive = s.key === selectedBidKey;
+    const extra = isActive ? ' active' : '';
+    const roleClass = s.role === 'opener' ? ' opener' : ' responder';
+    return `<span class="seq-bid${extra}${roleClass}" onclick="showBidInfo('${s.key}')">${formatBid(s.key)}</span>` +
+      (i < sequence.length - 1 ? '<span class="seq-sep">—</span>' : '');
+  }).join('') + `
+    <span class="seq-arrow" onclick="clearSequence()" style="cursor:pointer;opacity:0.5;font-size:0.8rem;margin-left:8px;" title="清空序列">✕</span>
+  `;
+}
+
+function clearSequence() {
+  sequence = [];
+  selectedBidKey = null;
+  updateSequenceDisplay();
+  document.getElementById('infoArea').innerHTML = `
+    <div class="empty-state">
+      <div class="icon">♣</div>
+      <p>序列已清空</p>
+      <p style="margin-top:8px;font-size:0.8rem;">继续选择叫品</p>
+    </div>`;
+  document.getElementById('nextBidsSection').style.display = 'none';
+}
+
+function showBidInfo(key) {
+  selectedBidKey = key;
+  updateSequenceDisplay();
+
+  // Build context
+  let contextKey = key;
+  if (sequence.length >= 2) {
+    const prev = sequence[sequence.length - 2];
+    contextKey = `${prev.key}-${key}`;
+  }
+
+  const d = biddingData[contextKey] || biddingData[key];
+  if (!d) {
+    // Fallback to basic
+    const basic = biddingData[key];
+    if (basic) {
+      showInfoCard(basic, key);
+      return;
+    }
+    document.getElementById('infoArea').innerHTML = `
+      <div class="info-card">
+        <h2>${formatBid(key)}</h2>
+        <p>暂无详细数据。请参考波兰梅花体系文档。</p>
+      </div>`;
+    return;
+  }
+
+  showInfoCard(d, key);
+
+  // Update next bids
+  const nextBidsSection = document.getElementById('nextBidsSection');
+  const nextBids = document.getElementById('nextBids');
+  if (d.next) {
+    nextBidsSection.style.display = 'block';
+    nextBids.innerHTML = Object.entries(d.next).map(([k, v]) => `
+      <div class="bid-option" onclick="addBidToSeq('${k}')">
+        <span class="bid-code ${getBidClass(k)}">${formatBid(k)}</span>
+        <span class="bid-desc"><strong>${v.label}</strong><br>${v.meaning}</span>
+      </div>
+    `).join('');
+  } else {
+    nextBidsSection.style.display = 'none';
+  }
+}
+
+function showInfoCard(d, key) {
+  let html = `<div class="info-card">
+    <h2>${formatBid(key)} <span class="bid-badge">${d.title || ''}</span></h2>`;
+
+  if (d.meaning) {
+    html += `<p style="color:var(--accent2);margin-bottom:12px;font-size:0.95rem;">${d.meaning}</p>`;
+  }
+
+  if (d.tags) {
+    html += `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">`;
+    html += d.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('');
+    html += `</div>`;
+  }
+
+  if (d.rules) {
+    html += `<h3>规则要点</h3><ul>`;
+    html += d.rules.map(r => `<li><strong>${r.label}：</strong>${r.value}</li>`).join('');
+    html += `</ul>`;
+  }
+
+  if (d.types) {
+    html += `<h3>类型</h3><ul>`;
+    html += d.types.map(t => `<li><strong>${t.label}：</strong>${t.desc}</li>`).join('');
+    html += `</ul>`;
+  }
+
+  if (d.detail) {
+    html += `<div class="note">${d.detail}</div>`;
+  }
+
+  if (d.examples) {
+    d.examples.forEach(ex => {
+      if (ex.desc) {
+        html += `<div class="note">${ex.desc}</div>`;
+      }
+      if (ex.hand) {
+        const suits = ['♣','♦','♥','♠'];
+        const handStr = ex.hand.map((line, i) => {
+          const suit = suits[i];
+          const cls = ['suit-club','suit-diamond','suit-heart','suit-spade'][i];
+          return `<span class="${cls}">${suit}：${line}</span>`;
+        }).join('&nbsp;&nbsp;');
+        html += `<div class="example-hand"><strong>${ex.label}：</strong><br>${handStr}</div>`;
+      }
+    });
+  }
+
+  if (d.next) {
+    html += `<h3>后续应叫（共${Object.keys(d.next).length}种）</h3><ul>`;
+    Object.entries(d.next).forEach(([k, v]) => {
+      html += `<li><strong class="${getBidClass(k)}" style="min-width:50px;display:inline-block;">${formatBid(k)}</strong> — ${v.meaning}`;
+      if (v.tags) {
+        html += ' ';
+        html += v.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('');
+      }
+      html += `</li>`;
+    });
+    html += `</ul>`;
+  }
+
+  html += `</div>`;
+  document.getElementById('infoArea').innerHTML = html;
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  renderChapterContent('main');
+  showChapter('main');
+});
+</script>
+</body>
+</html>
