@@ -465,8 +465,33 @@ body {
     </div>
 
     <div id="availableBidsPanel">
-      <div class="section-title">可点击的叫品</div>
-      <div id="availableBids"></div>
+      <div class="section-title">选择叫品</div>
+      <div id="availableBids">
+        <div class="section-title" style="font-size:0.65rem;color:var(--gold);margin:8px 0 4px;">—— 开叫 ——</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;">
+          <button class="bid-btn club large" onclick="addBidToSeq('1C')" title="1♣ 开叫">1♣</button>
+          <button class="bid-btn diamond large" onclick="addBidToSeq('1D')" title="1♦ 开叫">1♦</button>
+          <button class="bid-btn heart large" onclick="addBidToSeq('1H')" title="1♥ 开叫">1♥</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;">
+          <button class="bid-btn spade large" onclick="addBidToSeq('1S')" title="1♠ 开叫">1♠</button>
+          <button class="bid-btn nt large" onclick="addBidToSeq('1NT')" title="1NT 开叫">1NT</button>
+          <button class="bid-btn level large" onclick="addBidToSeq('2C')" title="2♣ 强牌">2♣</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;">
+          <button class="bid-btn diamond large" onclick="addBidToSeq('2D')" title="2♦">2♦</button>
+          <button class="bid-btn heart large" onclick="addBidToSeq('2H')" title="2♥">2♥</button>
+          <button class="bid-btn spade large" onclick="addBidToSeq('2S')" title="2♠">2♠</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px;">
+          <button class="bid-btn nt large" onclick="addBidToSeq('2NT')" title="2NT">2NT</button>
+          <button class="bid-btn pass large" onclick="addBidToSeq('P')" title="Pass">P</button>
+        </div>
+        <div class="section-title" style="font-size:0.65rem;color:var(--gold);margin:8px 0 4px;">—— 应叫（选开叫后） ——</div>
+        <div id="responseBids" style="color:var(--muted);font-size:0.78rem;padding:4px 0;">点击上方开叫后显示应叫</div>
+        <div class="section-title" style="font-size:0.65rem;color:var(--gold);margin:8px 0 4px;">—— 叫牌序列操作 ——</div>
+        <button class="bid-btn" onclick="clearSequence()" style="width:100%;font-size:0.75rem;font-weight:400;aspect-ratio:auto;padding:8px;" title="清空序列">🗑 清空序列</button>
+      </div>
     </div>
   </div>
 
@@ -1148,28 +1173,50 @@ function buildChapterInfo(key) {
 // ===== BID SEQUENCE =====
 function addBidToSeq(key) {
   const role = sequence.length % 2 === 0 ? 'opener' : 'responder';
-  const d = biddingData[key];
+
+  // Build context key
+  let contextKey = key;
+  if (sequence.length >= 1) {
+    const prev = sequence[sequence.length - 1];
+    contextKey = `${prev.key}-${key}`;
+  }
+
+  // Look for data at context key, fallback to key alone
+  let d = biddingData[contextKey] || biddingData[key];
+  if (!d && sequence.length === 0) {
+    // Opening bid - find in biddingData by key
+    d = biddingData[key];
+  } else if (!d) {
+    d = biddingData[key];
+  }
+
   const label = d ? d.title.split('（')[0] : formatBid(key);
 
   sequence.push({ key, role, label });
   updateSequenceDisplay();
   showBidInfo(key);
 
-  // Update next available bids
-  const nextBidsSection = document.getElementById('nextBidsSection');
-  const nextBids = document.getElementById('nextBids');
-
-  // Build context key
-  let contextKey = key;
-  if (sequence.length > 2) {
-    const prev = sequence[sequence.length - 2];
-    contextKey = `${prev.key}-${key}`;
+  // Update LEFT panel response bids
+  const responseBidsEl = document.getElementById('responseBids');
+  if (d && d.next) {
+    responseBidsEl.innerHTML = Object.entries(d.next).map(([k, v]) => `
+      <div class="bid-option" onclick="addBidToSeq('${k}')">
+        <span class="bid-code ${getBidClass(k)}">${formatBid(k)}</span>
+        <span class="bid-desc"><strong>${v.label}</strong><br>${v.meaning}</span>
+      </div>
+    `).join('');
+  } else if (key === 'P') {
+    responseBidsEl.innerHTML = '<div style="color:var(--muted);font-size:0.78rem;padding:4px 0;">已 Pass，继续叫牌</div>';
+  } else {
+    responseBidsEl.innerHTML = '<div style="color:var(--muted);font-size:0.78rem;padding:4px 0;">无更多后续叫品</div>';
   }
 
-  const nextData = d?.next;
-  if (nextData) {
+  // Also update the center panel next bids
+  const nextBidsSection = document.getElementById('nextBidsSection');
+  const nextBids = document.getElementById('nextBids');
+  if (d && d.next) {
     nextBidsSection.style.display = 'block';
-    nextBids.innerHTML = Object.entries(nextData).map(([k, v]) => `
+    nextBids.innerHTML = Object.entries(d.next).map(([k, v]) => `
       <div class="bid-option" onclick="addBidToSeq('${k}')">
         <span class="bid-code ${getBidClass(k)}">${formatBid(k)}</span>
         <span class="bid-desc"><strong>${v.label}</strong><br>${v.meaning}</span>
@@ -1215,10 +1262,10 @@ function showBidInfo(key) {
   selectedBidKey = key;
   updateSequenceDisplay();
 
-  // Build context
+  // Build context: prev is the bid BEFORE the clicked one in sequence
   let contextKey = key;
   if (sequence.length >= 2) {
-    const prev = sequence[sequence.length - 2];
+    const prev = sequence[sequence.length - 2]; // one before the last (which is current key)
     contextKey = `${prev.key}-${key}`;
   }
 
