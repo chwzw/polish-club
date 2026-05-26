@@ -482,7 +482,21 @@ function renderMain() {
   const main = document.getElementById('mainContent');
 
   if (sequence.length === 0) {
-    main.innerHTML = `<div class="hint">← 点击左侧叫品开始</div>`;
+    // Show opening bids reference when starting
+    const openers = ['1C','1D','1H','1S','1NT'];
+    const openerCards = openers.map(k => {
+      const d = data[k];
+      if (!d) return '';
+      return `<div class="current-bid-card" style="margin-bottom:10px;">
+        <h2><span class="bid-sym ${getCls(k)}">${fmt(k)}</span><span>${d.title||''}</span></h2>
+        <p>${d.meaning||''}</p>
+        ${d.tag ? `<div class="tags">${tagHtml(d.tag)}</div>` : ''}
+      </div>`;
+    }).join('');
+    main.innerHTML = `<div class="hint">
+      <div style="font-size:0.9rem;font-weight:700;margin-bottom:12px;color:var(--text);">开叫含义</div>
+      ${openerCards}
+    </div>`;
     return;
   }
 
