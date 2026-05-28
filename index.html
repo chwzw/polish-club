@@ -296,15 +296,15 @@ body {
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const data = {
   // Opening bids
-  "1C":  {t:"1♣",role:"opener",tag:"artificial forcing",title:"人工预备性开叫",meaning:"①好的12-15均型（无5张高花且无4张♦）；②12-18点4-4-1-4单张♦；③16-18点6张♣或5张♣+高花4张；④19+任意型/好18点/8+赢墩",next:{"1D":"示弱 0-6点","1H":"实套且逼叫","1S":"实套且逼叫","1NT":"均型 7-10","2D":"5张+♦ 10+","2H":"好5张+♥ 进局逼","2S":"好5张+♠ 进局逼","2NT":"均型 11-12 邀","3NT":"13-15点 均型"}},
+  "1C":  {t:"1♣",role:"opener",tag:"artificial forcing",title:"人工预备性开叫",meaning:"①好的12-15均型（无5张高花且无4张♦）；②12-18点4-4-1-4分布，单张♣；③16-18点6张♣或5张♣+高花4张",next:{"1D":"示弱 0-6点","1H":"实套且逼叫","1S":"实套且逼叫","1NT":"均型 7-10","2D":"5张+♦ 10+","2H":"好5张+♥ 进局逼","2S":"好5张+♠ 进局逼","2NT":"均型 11-12 邀","3NT":"13-15点 均型"}},
   "1D":  {t:"1♦",role:"opener",tag:"natural",title:"自然开叫4张以上♦",meaning:"持4张以上♦，12-18大牌点开叫。唯一非经典是4张♦+5张♣。",next:{"1H":"实套且逼叫","1S":"实套且逼叫","1NT":"自然的 7-10 无4张高花","2C":"5张+♣ 10+","2D":"4张支持 6-10","2H":"好5张+♥ 进局逼","2S":"好5张+♠ 进局逼","2NT":"均型 11-12 邀"}},
   "1H":  {t:"1♥",role:"opener",tag:"natural",title:"自然开叫5张套",meaning:"持5张以上♥，12-18大牌点开叫。",next:{"1S":"4张♠","1NT":"无4张♠ 7-10","2C":"5张+♣ 10+","2D":"5张+♦ 10+","2H":"4张支持 6-10","2S":"好5张+♠ 进局逼","2NT":"均型 11-12","3H":"好13-15 4张支持"}},
   "1S":  {t:"1♠",role:"opener",tag:"natural",title:"自然开叫5张套",meaning:"持5张以上♠，12-18大牌点开叫。",next:{"1NT":"无4张♠ 7-10","2C":"5张+♣ 10+","2D":"5张+♦ 10+","2H":"4张♥ 10+ 询双高","2S":"4张支持 6-10","2NT":"均型 11-12","3S":"好13-15 4张支持"}},
   "1NT": {t:"1NT",role:"opener",tag:"natural game",title:"好的15-坏的18大牌点均型",meaning:"好的15-坏的18大牌点均型，无4张高花（可有5张低花）。",next:{"2C":"斯台曼 问高花","2D":"转移到♥","2H":"转移到♠","2S":"转移到♣","2NT":"转移到♦","3C":"好6张♣套 邀叫","3D":"好6张♦套 邀叫","3H":"低花5-4 ♦单缺 进局逼","3S":"低花5-4 ♣单缺 进局逼","3NT":"封3NT","4C":"盖伯尔问叫","4D":"德克萨斯转移到♥","4H":"德克萨斯转移到♠","4NT":"自然性质 小满贯邀叫"}},
-  "2C":  {t:"2♣",role:"opener",tag:"artificial forcing",title:"弱二开叫（11-15点）",meaning:"11-15大牌点，6张以上♣，或5张♣+一个高花4张套（双高花亦可）。",next:{"2D":"接力应叫 逼叫/邀叫","2H":"4张♥ 7+","2S":"4张♠ 7+","2NT":"均型 0-7","3C":"5张+♣ 弱牌","3D":"5张+♦ 弱牌"}},
+  "2C":  {t:"2♣",role:"opener",tag:"artificial forcing",title:"弱二开叫（11-15点，6张以上♣或5♣+4张高花）",meaning:"11-15大牌点，6张以上♣，或5张♣+一个高花4张套（双高花亦可）。",next:{"2D":"接力应叫 逼叫/邀叫","2H":"4张♥ 7+","2S":"4张♠ 7+","2NT":"均型 0-7","3C":"5张+♣ 弱牌","3D":"5张+♦ 弱牌"}},
   "2D":  {t:"2♦",role:"opener",tag:"weak natural",title:"威尔柯茨2♦",meaning:"双色套牌（5-5或更好），其中至少有一个高花套，低于开叫实力（7-11大牌点）。",next:{"2H":"有♥套 止选","2S":"有♠套 止选","2NT":"接力问套 强牌","3C":"长♣套 不逼叫","3H":"双高花 邀叫","3S":"双高花 加深阻击","3NT":"止叫"}},
-  "2H":  {t:"2♥",role:"opener",tag:"weak natural",title:"弱二阻击叫",meaning:"6张好的♥套，少于11/12大牌点。无局6点可开（KQ109XX时5点），有局一般≥8点。",next:{"2S":"接力询问 强牌","2NT":"接力询问 强牌","3H":"加叫 弱牌","4H":"封局","2D":"斯台曼 问短套","2H":"问短套 答叫","3D":"问短套 答叫","4D":"问短套 答叫"}},
-  "2S":  {t:"2♠",role:"opener",tag:"weak natural",title:"弱二阻击叫",meaning:"6张好的♠套，少于11/12大牌点。",next:{"2NT":"接力询问 强牌","3S":"加叫 弱牌","4S":"封局","2D":"斯台曼 问短套","2H":"问短套 答叫","3D":"问短套 答叫","4D":"问短套 答叫"}},
+  "2H":  {t:"2♥",role:"opener",tag:"weak natural",title:"弱二阻击叫",meaning:"6张好的♥套，少于11/12大牌点。无局6点可开（KQ109XX时5点），有局一般≥8点。",next:{"2S":"接力询问 强牌","2NT":"接力询问 强牌","3H":"加叫 弱牌","4H":"封局"}},
+  "2S":  {t:"2♠",role:"opener",tag:"weak natural",title:"弱二阻击叫",meaning:"6张好的♠套，少于11/12大牌点。无局6点可开（KQ109XX时5点），有局一般≥8点。",next:{"2NT":"接力询问 强牌","3S":"加叫 弱牌","4S":"封局"}},
   "2NT": {t:"2NT",role:"opener",tag:"weak natural",title:"低花双套5-5+阻击",meaning:"低花双套5-5或更长，牌力不够1♣开叫，无高花。",next:{"3C":"♣套 自然","3D":"♦套 自然","3H":"止叫","3S":"强度显示 问牌情","3NT":"止叫","4C":"自然应叫","4D":"自然应叫"}},
 
   // Contextual: after 1C
@@ -313,8 +313,8 @@ const data = {
   "1C-1S": {t:"1♣-1♠",role:"responder",tag:"natural forcing",title:"实套且逼叫",meaning:"应叫者实套且逼叫（无7点保证要求，只要有实力即可）。",next:{"1NT":"无将特征","2S":"4张支持","2C":"4张♣","2NT":"22-23点 均型","3S":"9赢墩"}},
   "1C-1NT":{t:"1♣-1NT",role:"responder",tag:"natural",title:"自然的且不逼叫",meaning:"7-10点均型，无4张高花，不逼叫。",next:{"2C":"4张♣弱牌","2D":"6张+♦ 16-18","2H":"4张♥","2S":"4张♠","2NT":"18-22点 均型"}},
   "1C-2D": {t:"1♣-2♦",role:"responder",tag:"natural forcing",title:"5张+♦套 10+点",meaning:"10+大牌点，5张以上♦套，无4张高花，逼叫一轮。",next:{"2H":"4张♥","2S":"4张♠","2NT":"18-22均型","3D":"好6张+♦ 16-18","3NT":"赌博式"}},
-  "1C-2H": {t:"1♣-2♥",role:"responder",tag:"natural game forcing",title:"好5张+♥ 进局逼",meaning:"好5张或6张以上♥套，进局逼叫。",next:{}},
-  "1C-2S": {t:"1♣-2♠",role:"responder",tag:"natural game forcing",title:"好5张+♠ 进局逼",meaning:"好5张或6张以上♠套，进局逼叫。",next:{}},
+  "1C-2H": {t:"1♣-2♥",role:"responder",tag:"natural game forcing",title:"好5张或6张以上♥套 进局逼",meaning:"好5张或6张以上♥套，进局逼叫。",next:{}},
+  "1C-2S": {t:"1♣-2♠",role:"responder",tag:"natural game forcing",title:"好5张或6张以上♠套 进局逼",meaning:"好5张或6张以上♠套，进局逼叫。",next:{}},
   "1C-2NT":{t:"1♣-2NT",role:"responder",tag:"natural invitational",title:"均型 11-12点 邀叫",meaning:"11-12点均型，无4张高花，邀叫进局。",next:{}},
   "1C-3NT":{t:"1♣-3NT",role:"responder",tag:"game",title:"13-15点 均型 封局",meaning:"13-15点均型，封3NT。",next:{}},
 
@@ -328,7 +328,7 @@ const data = {
   "1D-2NT":{t:"1♦-2NT",role:"responder",tag:"natural invitational",title:"均型 11-12点 邀叫",meaning:"均型11-12点，邀叫进局。",next:{}},
 
   // After 1H
-  "1H-1S": {t:"1♥-1♠",role:"responder",tag:"natural forcing",title:"4张♠ 7+点",meaning:"4张♠，7+点，逼叫一轮。",next:{"1NT":"无将特征","2S":"4张支持","2C":"4张♣","2NT":"好牌均型","3S":"好13-15点"}},
+  "1H-1S": {t:"1♥-1♠",role:"responder",tag:"natural forcing",title:"4张♠ 7+点 逼叫一轮",meaning:"4张♠，7+点，逼叫一轮。",next:{"1NT":"无将特征","2S":"4张支持","2C":"4张♣","2NT":"好牌均型","3S":"好13-15点"}},
   "1H-1NT":{t:"1♥-1NT",role:"responder",tag:"natural",title:"无4张♠ 7-10点",meaning:"无4张♠，7-10点均型。",next:{}},
   "1H-2C": {t:"1♥-2♣",role:"responder",tag:"natural forcing",title:"5张+♣ 10+点",meaning:"5张以上♣套，10+点。",next:{}},
   "1H-2D": {t:"1♥-2♦",role:"responder",tag:"natural forcing",title:"5张+♦ 10+点",meaning:"5张以上♦套，10+点。",next:{}},
@@ -350,12 +350,12 @@ const data = {
   "1NT-2C": {t:"1NT-2♣",role:"responder",tag:"artificial forcing",title:"斯台曼 问高花",meaning:"询问开叫者是否有4张高花套。开叫者答叫：2♦=有4张高花（2♥=4张♥，2♠=4张♠），2NT/3m=无4张高花。",next:{}},
   "1NT-2D": {t:"1NT-2♦",role:"responder",tag:"artificial forcing",title:"转移到♥",meaning:"应叫者持5张♥，要求开叫者叫2♥。",next:{}},
   "1NT-2H": {t:"1NT-2♥",role:"responder",tag:"artificial forcing",title:"转移到♠",meaning:"应叫者持5张♠，要求开叫者叫2♠。",next:{}},
-  "1NT-2S": {t:"1NT-2♠",role:"responder",tag:"artificial forcing",title:"转移到♣",meaning:"应叫者持5张♣，要求开叫者叫3♣。",next:{}},
-  "1NT-2NT":{t:"1NT-2NT",role:"responder",tag:"artificial forcing",title:"转移到♦",meaning:"应叫者持5张♦，要求开叫者叫3♦。",next:{}},
+  "1NT-2S": {t:"1NT-2♠",role:"responder",tag:"artificial forcing",title:"转移到3♣",meaning:"应叫者持5张♣，要求开叫者叫3♣。",next:{}},
+  "1NT-2NT":{t:"1NT-2NT",role:"responder",tag:"artificial forcing",title:"转移到3♦",meaning:"应叫者持5张♦，要求开叫者叫3♦。",next:{}},
   "1NT-3C":{t:"1NT-3♣",role:"responder",tag:"natural invitational",title:"好6张♣套 邀叫",meaning:"好的6张♣套，邀叫实力。",next:{}},
   "1NT-3D":{t:"1NT-3♦",role:"responder",tag:"natural invitational",title:"好6张♦套 邀叫",meaning:"好的6张♦套，邀叫实力。",next:{}},
-  "1NT-3H":{t:"1NT-3♥",role:"responder",tag:"game forcing",title:"低花5-4 ♣单缺 进局逼",meaning:"低花5-4/4-5，♣单缺，进局逼叫。",next:{}},
-  "1NT-3S":{t:"1NT-3♠",role:"responder",tag:"game forcing",title:"低花5-4 ♦单缺 进局逼",meaning:"低花5-4/4-5，♦单缺，进局逼叫。",next:{}},
+  "1NT-3H":{t:"1NT-3♥",role:"responder",tag:"game forcing",title:"低花5-4 ♦单缺 进局逼",meaning:"低花5-4/4-5，♦单缺，进局逼叫。",next:{}},
+  "1NT-3S":{t:"1NT-3♠",role:"responder",tag:"game forcing",title:"低花5-4 ♣单缺 进局逼",meaning:"低花5-4/4-5，♣单缺，进局逼叫。",next:{}},
   "1NT-3NT":{t:"1NT-3NT",role:"responder",tag:"game",title:"封3NT",meaning:"13-15点均型，封3NT。",next:{}},
 
   // After 2C
